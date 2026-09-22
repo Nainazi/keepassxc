@@ -2,18 +2,17 @@
 <!--Copyright 2025 KeePassXC Team <team@keepassxc.org> -->
 <component type="desktop-application">
   <!--Created with jdAppStreamEdit 9.2-->
-  <id>org.keepassxc.KeePassXC.desktop</id>
-  <name>KeePassXC</name>
-  <summary>Secure and Full-featured Password Manager</summary>
+  <id>com.nainazi.passbook.desktop</id>
+  <name>奈娜子密码本</name>
+  <summary>Personal KeePassXC fork — password manager</summary>
   <summary xml:lang="de">Sicherer und voll ausgestatteter Passwort-Manager</summary>
-  <developer id="org.keepassxc">
-    <name>KeePassXC Team</name>
+  <developer id="com.nainazi">
+    <name>Nainazi</name>
   </developer>
   <metadata_license>CC-BY-3.0</metadata_license>
-  <project_license>GPL-3.0-or-later</project_license>
-  <update_contact>team@keepassxc.org</update_contact>
+  <project_license>GPL-2.0-or-later</project_license>
   <description>
-    <p>KeePassXC is a modern, secure, and open-source password manager for your most sensitive information.
+    <p>奈娜子密码本 is a personal fork of KeePassXC. KeePassXC is a modern, secure, and open-source password manager for your most sensitive information.
       Designed for people with extremely high demands of secure personal data management. You can store
       many different types of information, such as usernames, passwords, URLs, attachments, and notes in
       an offline, encrypted file. Major features include: Auto-Type into any window, browser integration,
@@ -829,19 +828,14 @@
       </description>
     </release>
   </releases>
-  <url type="homepage">https://keepassxc.org</url>
-  <url type="bugtracker">https://github.com/keepassxreboot/keepassxc/issues</url>
-  <url type="faq">https://keepassxc.org/docs/#faq</url>
+  <url type="homepage">https://github.com/Nainazi/keepassxc</url>
+  <url type="bugtracker">https://github.com/Nainazi/keepassxc/issues</url>
   <url type="help">https://keepassxc.org/docs/</url>
-  <url type="donation">https://keepassxc.org/donate/</url>
-  <url type="translate">https://explore.transifex.com/keepassxc/keepassxc/</url>
-  <url type="contact">https://keepassxc.org/team/#contact</url>
-  <url type="vcs-browser">https://github.com/keepassxreboot/keepassxc</url>
-  <url type="contribute">https://keepassxc.org/docs/#contribute</url>
+  <url type="vcs-browser">https://github.com/Nainazi/keepassxc</url>
   <content_rating type="oars-1.1"/>
-  <launchable type="desktop-id">org.keepassxc.KeePassXC.desktop</launchable>
+  <launchable type="desktop-id">com.nainazi.passbook.desktop</launchable>
   <branding>
-    <color type="primary" scheme_preference="light">#5b982a</color>
-    <color type="primary" scheme_preference="dark">#5b982a</color>
+    <color type="primary" scheme_preference="light">#3C2F7A</color>
+    <color type="primary" scheme_preference="dark">#3C2F7A</color>
   </branding>
 </component>

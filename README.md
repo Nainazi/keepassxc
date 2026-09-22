@@ -1,14 +1,14 @@
-# <img src="https://keepassxc.org/assets/img/keepassxc.svg" width="40" height="40"/> KeePassXC
+# 奈娜子密码本
 
-[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/6326/badge)](https://bestpractices.coreinfrastructure.org/projects/6326)
-[![TeamCity Build Status](https://ci.keepassxc.org/app/rest/builds/buildType:\(project:KeepassXC\)/statusIcon)](https://ci.keepassxc.org/?guest=1)
-[![codecov](https://codecov.io/gh/keepassxreboot/keepassxc/branch/develop/graph/badge.svg)](https://codecov.io/gh/keepassxreboot/keepassxc)
-[![GitHub release](https://img.shields.io/github/release/keepassxreboot/keepassxc)](https://github.com/keepassxreboot/keepassxc/releases/)
+Personal password manager. This repository is a GPL fork of [KeePassXC](https://keepassxc.org) ([keepassxreboot/keepassxc](https://github.com/keepassxreboot/keepassxc)) for personal use. It is not an official KeePassXC release.
 
-[![Matrix community channel](https://img.shields.io/matrix/keepassxc:matrix.org?label=Community%20channel)](https://app.element.io/#/room/#keepassxc:mozilla.org)
-[![Matrix development channel](https://img.shields.io/matrix/keepassxc-dev:matrix.org?label=Development%20channel)](https://app.element.io/#/room/#keepassxc-dev:mozilla.org)
+| | |
+| --- | --- |
+| Display name | 奈娜子密码本 |
+| Executable | `nainazi-passbook` |
+| Application id | `com.nainazi.passbook` |
 
-[KeePassXC](https://keepassxc.org) is a modern, secure, and open-source password manager that stores and manages your most sensitive information. You can run KeePassXC on Windows, macOS, and Linux systems. KeePassXC is for people with extremely high demands of secure personal data management. It saves many different types of information, such as usernames, passwords, URLs, attachments, and notes in an offline, encrypted file that can be stored in any location, including private and public cloud solutions. For easy identification and management, user-defined titles and icons can be specified for entries. In addition, entries are sorted into customizable groups. An integrated search function allows you to use advanced patterns to easily find any entry in your database. A customizable, fast, and easy-to-use password generator utility allows you to create passwords with any combination of characters or easy to remember passphrases.
+KeePassXC is a modern, secure, and open-source password manager that stores and manages your most sensitive information. You can run it on Windows, macOS, and Linux. It saves usernames, passwords, URLs, attachments, and notes in an offline, encrypted KDBX file. This fork keeps that format, the crypto, and browser integration, and changes the name, icon, and update checks. Branding details and the build flag that disables official update checks are in [REBRAND.md](REBRAND.md).
 
 ## Quick Start
 
@@ -48,9 +48,9 @@ KeePassXC has numerous features for novice and power users alike. Our goal is to
 For a full list of changes, read the [CHANGELOG](CHANGELOG.md) document. \
 For a full list of keyboard shortcuts, see [KeyboardShortcuts.adoc](./docs/topics/KeyboardShortcuts.adoc)
 
-## Building KeePassXC
+## Building
 
-Detailed instructions are available in the [Build and Install](./INSTALL.md) page and in the [Wiki](https://github.com/keepassxreboot/keepassxc/wiki/Building-KeePassXC).
+Follow the upstream [Build and Install](./INSTALL.md) page. For this fork, official update checks are off unless you pass `-DKPXC_FEATURE_UPDATES=ON`. See [REBRAND.md](REBRAND.md). The GUI binary is `nainazi-passbook`. `keepassxc-cli` and `keepassxc-proxy` keep their upstream names so browser integration still matches the KeePassXC browser extension.
 
 ## Contributing
 
@@ -66,4 +66,4 @@ Generative AI is fast becoming a first-party feature in most development environ
 
 ## License
 
-KeePassXC code is licensed under GPL-2 or GPL-3. Additional licensing for third-party files is detailed in [COPYING](./COPYING).
+This fork is licensed under GPL-2.0 or GPL-3.0, the same terms as KeePassXC. Copyright remains with the original KeePassXC and KeePassX authors. Additional licensing for third-party files is detailed in [COPYING](./COPYING). Do not remove those notices.

@@ -124,7 +124,7 @@ static const QHash<Config::ConfigKey, ConfigDirective> configStrings = {
     {Config::GUI_MonospaceNotes, {QS("GUI/MonospaceNotes"), Roaming, false}},
     {Config::GUI_ApplicationTheme, {QS("GUI/ApplicationTheme"), Roaming, QS("auto")}},
     {Config::GUI_CompactMode, {QS("GUI/CompactMode"), Roaming, false}},
-    {Config::GUI_CheckForUpdates, {QS("GUI/CheckForUpdates"), Roaming, true}},
+    {Config::GUI_CheckForUpdates, {QS("GUI/CheckForUpdates"), Roaming, false}},
     {Config::GUI_CheckForUpdatesNextCheck, {QS("GUI/CheckForUpdatesNextCheck"), Local, 0}},
     {Config::GUI_CheckForUpdatesIncludeBetas, {QS("GUI/CheckForUpdatesIncludeBetas"), Roaming, false}},
     {Config::GUI_SearchWaitForEnter, {QS("GUI/SearchWaitForEnter"), Roaming, false}},

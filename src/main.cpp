@@ -63,16 +63,22 @@ int main(int argc, char** argv)
 
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-    QGuiApplication::setDesktopFileName("org.keepassxc.KeePassXC");
+    QGuiApplication::setDesktopFileName("com.nainazi.passbook");
 #if defined(Q_OS_WIN)
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
     Application app(argc, argv);
-    // don't set organizationName as that changes the return value of
-    // QStandardPaths::writableLocation(QDesktopServices::DataLocation)
-    Application::setApplicationName("KeePassXC");
+    // applicationName is the executable id (autostart Exec, some QStandardPaths).
+    // applicationDisplayName is the user-visible product name.
+    // Linux config files stay under ~/.config/keepassxc (Config::defaultConfigFiles).
+    // On Windows and macOS, organizationName is included in QStandardPaths, so this
+    // fork does not share that platform's KeePassXC settings directory.
+    Application::setOrganizationName(QStringLiteral("Nainazi"));
+    Application::setOrganizationDomain(QStringLiteral("com.nainazi.passbook"));
+    Application::setApplicationName(QStringLiteral("nainazi-passbook"));
+    Application::setApplicationDisplayName(QStringLiteral("奈娜子密码本"));
     Application::setApplicationVersion(KEEPASSXC_VERSION);
-    app.setProperty("KPXC_QUALIFIED_APPNAME", "org.keepassxc.KeePassXC");
+    app.setProperty("KPXC_QUALIFIED_APPNAME", "com.nainazi.passbook");
 
     // HACK: Prevent long-running threads from deadlocking the program with only 1 CPU
     // See https://github.com/keepassxreboot/keepassxc/issues/10391
@@ -83,7 +89,7 @@ int main(int argc, char** argv)
     }
 
     QCommandLineParser parser;
-    parser.setApplicationDescription(QObject::tr("KeePassXC - cross-platform password manager"));
+    parser.setApplicationDescription(QStringLiteral("奈娜子密码本 — personal fork of KeePassXC"));
     parser.addPositionalArgument(
         "filename(s)", QObject::tr("filenames of the password databases to open (*.kdbx)"), "[filename(s)]");
 

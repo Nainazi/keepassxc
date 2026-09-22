@@ -76,7 +76,7 @@
 #include "mainwindowadaptor.h"
 #endif
 
-const QString MainWindow::BaseWindowTitle = "KeePassXC";
+const QString MainWindow::BaseWindowTitle = QStringLiteral("奈娜子密码本");
 
 MainWindow* g_MainWindow = nullptr;
 MainWindow* getMainWindow()
@@ -1084,7 +1084,7 @@ void MainWindow::performUpdateCheck()
                                  tr("Would you like KeePassXC to check for updates on startup?") + "\n\n"
                                      + tr("You can always check for updates manually from the application menu."),
                                  MessageBox::Yes | MessageBox::No,
-                                 MessageBox::Yes);
+                                 MessageBox::No);
 
         config()->set(Config::GUI_CheckForUpdates, (result == MessageBox::Yes));
         config()->set(Config::UpdateCheckMessageShown, true);
@@ -1537,7 +1537,7 @@ void MainWindow::updateTrayIcon()
             menu->addAction(m_ui->actionLockAllDatabases);
 
 #ifdef Q_OS_MACOS
-            auto actionQuit = new QAction(tr("Quit KeePassXC"), menu);
+            auto actionQuit = new QAction(QStringLiteral("退出奈娜子密码本"), menu);
             connect(actionQuit, SIGNAL(triggered()), SLOT(appExit()));
             menu->addAction(actionQuit);
 #else

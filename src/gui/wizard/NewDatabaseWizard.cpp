@@ -44,7 +44,7 @@ NewDatabaseWizard::NewDatabaseWizard(QWidget* parent)
         addPage(page);
     }
 
-    setWindowTitle(tr("Create a new KeePassXC database…"));
+    setWindowTitle(QStringLiteral("新建奈娜子密码本数据库…"));
 
     Q_INIT_RESOURCE(wizard);
     setPixmap(QWizard::BackgroundPixmap, QPixmap(":/wizard/background-pixmap.png"));

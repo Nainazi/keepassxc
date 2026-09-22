@@ -35,6 +35,7 @@ if [[ "$1" =~ "$arg1" || "$2" == "$arg2" ]]; then
 elif [[ "$1" == "cli" ]]; then
     exec keepassxc-cli "${@:2}"
 else
-    # If no arguments are matched or browser integration is off, execute keepassxc
-    exec keepassxc "$@"
+    # If no arguments are matched or browser integration is off, execute the GUI.
+    # keepassxc-proxy and keepassxc-cli keep their names for browser integration.
+    exec nainazi-passbook "$@"
 fi

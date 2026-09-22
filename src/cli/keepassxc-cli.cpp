@@ -113,7 +113,7 @@ int main(int argc, char** argv)
     }
     QCommandLineParser parser;
 
-    QString description("KeePassXC command line interface.");
+    QString description("奈娜子密码本 command line interface (keepassxc-cli).");
     description = description.append(QObject::tr("\n\nAvailable commands:\n"));
     for (auto& command : Commands::getCommands()) {
         description = description.append(command->getDescriptionLine());
