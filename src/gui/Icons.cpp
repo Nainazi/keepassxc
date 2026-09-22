@@ -54,8 +54,9 @@ Icons::Icons() = default;
 QString Icons::applicationIconName()
 {
 #ifdef KEEPASSXC_DIST_FLATPAK
-    return "org.keepassxc.KeePassXC";
+    return "com.nainazi.passbook";
 #else
+    // qrc theme icon id. Installed hicolor icons are renamed to nainazi-passbook.
     return "keepassxc";
 #endif
 }

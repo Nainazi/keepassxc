@@ -31,7 +31,7 @@ DatabaseOpenDialog::DatabaseOpenDialog(QWidget* parent)
     , m_view(new DatabaseOpenWidget(this))
     , m_tabBar(new QTabBar(this))
 {
-    setWindowTitle(tr("Unlock Database - KeePassXC"));
+    setWindowTitle(QStringLiteral("解锁数据库 - 奈娜子密码本"));
     setWindowFlags(Qt::Dialog);
     setWindowFlag(Qt::WindowContextHelpButtonHint, false);
 #ifdef Q_OS_LINUX

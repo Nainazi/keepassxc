@@ -1,17 +1,17 @@
-name: keepassxc
-adopt-info: keepassxc
+name: nainazi-passbook
+adopt-info: nainazi-passbook
 grade: stable
 base: core22
 confinement: strict
 compression: lzo
 
 apps:
-  keepassxc:
-    command: usr/bin/keepassxc
-    common-id: org.keepassxc.KeePassXC.desktop
+  nainazi-passbook:
+    command: usr/bin/nainazi-passbook
+    common-id: com.nainazi.passbook.desktop
     extensions: [kde-neon]
     plugs: [home, unity7, network, network-bind, removable-media, raw-usb, password-manager-service, browser-native-messaging]
-    autostart: org.keepassxc.KeePassXC.desktop
+    autostart: com.nainazi.passbook.desktop
   cli:
     command: usr/bin/keepassxc-cli
     extensions: [kde-neon]
@@ -39,10 +39,10 @@ slots:
     bus: session
 
 parts:
-  keepassxc:
+  nainazi-passbook:
     source: .
     plugin: cmake
-    parse-info: [usr/share/metainfo/org.keepassxc.KeePassXC.appdata.xml]
+    parse-info: [usr/share/metainfo/com.nainazi.passbook.appdata.xml]
     cmake-parameters:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_INSTALL_PREFIX=/usr
@@ -51,6 +51,7 @@ parts:
       - -DWITH_TESTS=OFF
       - -DWITH_XC_ALL=ON
       - -DWITH_XC_UPDATECHECK=OFF
+      - -DKPXC_FEATURE_UPDATES=OFF
     build-packages:
       - g++
       - libbotan-2-dev

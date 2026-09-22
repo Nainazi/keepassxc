@@ -84,7 +84,7 @@ KeePassXC comes with a variety of build options that can turn on/off features. E
 -DKPXC_FEATURE_FDOSECRETS=[ON|OFF] (Linux Only) freedesktop.org Secret Service integration; replace system keyring (default:ON)
 
 -DKPXC_FEATURE_NETWORK=[ON|OFF] Include code that reaches out to external networks (e.g. downloading icons) (default: ON)
--DKPXC_FEATURE_UPDATES=[ON|OFF] Include automatic update checks; disable for managed distributions (requires networking) (default: ON)
+-DKPXC_FEATURE_UPDATES=[ON|OFF] Include automatic update checks; disable for managed distributions (requires networking) (default: OFF on this fork; see REBRAND.md)
 -DKPXC_FEATURE_DOCS=[ON|OFF] Build offline documentation; requires asciidoctor tool (default: ON)
 
 -DWITH_TESTS=[ON|OFF] Enable/Disable building of unit tests (default: ON)

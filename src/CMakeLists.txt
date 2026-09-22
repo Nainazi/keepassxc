@@ -421,8 +421,12 @@ if(WIN32)
     include(GenerateProductVersion)
     generate_product_version(
             WIN32_ResourceFiles
-            NAME "KeePassXC"
-            COMPANY_NAME "KeePassXC Team"
+            NAME "nainazi-passbook"
+            BUNDLE "奈娜子密码本"
+            COMPANY_NAME "Nainazi"
+            FILE_DESCRIPTION "奈娜子密码本"
+            ORIGINAL_FILENAME "nainazi-passbook.exe"
+            COMMENTS "Personal GPL fork of KeePassXC"
             VERSION_MAJOR ${KEEPASSXC_VERSION_MAJOR}
             VERSION_MINOR ${KEEPASSXC_VERSION_MINOR}
             VERSION_PATCH ${KEEPASSXC_VERSION_PATCH}
@@ -431,7 +435,7 @@ if(WIN32)
     target_sources(${PROGNAME} PUBLIC ${WIN32_ResourceFiles})
 
 elseif(APPLE AND WITH_APP_BUNDLE)
-    set(MACOSX_BUNDLE_IDENTIFIER org.keepassxc.keepassxc)
+    set(MACOSX_BUNDLE_IDENTIFIER com.nainazi.passbook)
     set(MACOSX_BUNDLE_ICON_NAME keepassxc)
     set(MACOSX_BUNDLE_APPLE_ENTITLEMENTS "${CMAKE_SOURCE_DIR}/share/macosx/keepassxc.entitlements")
     configure_file("${CMAKE_SOURCE_DIR}/share/macosx/Info.plist.in" ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
@@ -509,7 +513,8 @@ if(WIN32)
     set(CPACK_PACKAGE_FILE_NAME "${PROGNAME}-${KEEPASSXC_VERSION}-${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
     set(CPACK_PACKAGE_INSTALL_DIRECTORY ${PROGNAME})
     set(CPACK_PACKAGE_VERSION ${KEEPASSXC_VERSION_CLEAN})
-    set(CPACK_PACKAGE_VENDOR "${PROGNAME} Team")
+    set(CPACK_PACKAGE_NAME "nainazi-passbook")
+    set(CPACK_PACKAGE_VENDOR "Nainazi")
     set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_BINARY_DIR}/INSTALLER_LICENSE.txt")
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
     set(CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/share/windows/keepassxc.ico")
@@ -519,15 +524,16 @@ if(WIN32)
     set(CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP "${CMAKE_SOURCE_DIR}/share/windows/installer-wizard.png")
     set(CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROGNAME}.lnk' '$INSTDIR\\\\${PROGNAME}.exe'")
     set(CPACK_NSIS_DELETE_ICONS_EXTRA "Delete '$SMPROGRAMS\\\\$START_MENU\\\\${PROGNAME}.lnk'")
-    set(CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "ExecWait 'Taskkill /IM KeePassXC.exe'")
+    set(CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "ExecWait 'Taskkill /IM ${PROGNAME}.exe'")
     set(CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "${CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS}\nExecWait 'Taskkill /IM keepassxc-proxy.exe /F'")
-    set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "ExecWait 'Taskkill /IM KeePassXC.exe'")
+    set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "ExecWait 'Taskkill /IM ${PROGNAME}.exe'")
     set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS}\nExecWait 'Taskkill /IM keepassxc-proxy.exe /F'")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https://keepassxc.org")
-    set(CPACK_NSIS_DISPLAY_NAME ${PROGNAME})
-    set(CPACK_NSIS_PACKAGE_NAME "${PROGNAME} v${KEEPASSXC_VERSION}")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/Nainazi/keepassxc")
+    set(CPACK_NSIS_DISPLAY_NAME "奈娜子密码本")
+    set(CPACK_NSIS_PACKAGE_NAME "奈娜子密码本 v${KEEPASSXC_VERSION}")
     set(CPACK_NSIS_MUI_FINISHPAGE_RUN "../${PROGNAME}.exe")
-    set(CPACK_WIX_UPGRADE_GUID 88785A72-3EAE-4F29-89E3-BC6B19BA9A5B)
+    # Not the upstream KeePassXC upgrade GUID, so this installer does not replace an official install.
+    set(CPACK_WIX_UPGRADE_GUID 12BC3652-C288-4AB0-BE7D-66CFD46D827E)
     set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/share/windows/keepassxc.ico")
     set(CPACK_WIX_UI_BANNER "${CMAKE_SOURCE_DIR}/share/windows/installer-banner.png")
     set(CPACK_WIX_UI_DIALOG "${CMAKE_SOURCE_DIR}/share/windows/installer-wizard.png")

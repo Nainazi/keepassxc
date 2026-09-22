@@ -3,13 +3,13 @@
  "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 <policyconfig>
-  <vendor>KeePassXC Developers</vendor>
-  <vendor_url></vendor_url>
+  <vendor>Nainazi</vendor>
+  <vendor_url>https://github.com/Nainazi/keepassxc</vendor_url>
   <icon_name>@APP_ICON_NAME@</icon_name>
   
-  <action id="org.keepassxc.KeePassXC.unlockDatabase">
-    <description>Quick Unlock for a KeePassXC Database</description>
-    <message>Authentication is required to unlock a KeePassXC Database</message>
+  <action id="com.nainazi.passbook.unlockDatabase">
+    <description>Quick Unlock for a 奈娜子密码本 Database</description>
+    <message>Authentication is required to unlock a 奈娜子密码本 database</message>
     <defaults>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_self</allow_active>

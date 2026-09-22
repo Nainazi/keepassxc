@@ -63,7 +63,9 @@ endif()
 
 # Minor Feature Flags
 option(KPXC_FEATURE_NETWORK "Include code that reaches out to external networks (e.g. downloading icons)" ON)
-option(KPXC_FEATURE_UPDATES "Include automatic update checks; disable for managed distributions" ON)
+# Personal fork: do not phone home to keepassxreboot/keepassxc for update checks.
+# Re-enable only with -DKPXC_FEATURE_UPDATES=ON. See REBRAND.md.
+option(KPXC_FEATURE_UPDATES "Include automatic update checks; disable for managed distributions" OFF)
 option(KPXC_FEATURE_DOCS "Build offline documentation; requires asciidoctor tool" ON)
 
 # Reconcile update feature with overall network feature
@@ -95,7 +97,9 @@ endif()
 
 # Initialize project
 project(KeePassXC)
-set(APP_ID "org.keepassxc.${PROJECT_NAME}")
+# Desktop / AppStream id for this fork. CMake project() stays KeePassXC so
+# existing target and cache names keep working. See REBRAND.md.
+set(APP_ID "com.nainazi.passbook")
 
 # Retrieve git HEAD revision hash
 set(GIT_HEAD_OVERRIDE "" CACHE STRING "Manually set the Git HEAD hash when missing (eg, when no .git folder exists)")
@@ -387,14 +391,14 @@ if(WIN32)
 endif()
 
 if(WIN32)
-    set(PROGNAME KeePassXC)
+    set(PROGNAME nainazi-passbook)
     set(CLI_INSTALL_DIR ".")
     set(PROXY_INSTALL_DIR ".")
     set(BIN_INSTALL_DIR ".")
     set(PLUGIN_INSTALL_DIR ".")
     set(DATA_INSTALL_DIR "share")
 elseif(APPLE AND WITH_APP_BUNDLE)
-    set(PROGNAME KeePassXC)
+    set(PROGNAME nainazi-passbook)
     set(BUNDLE_INSTALL_DIR "${PROGNAME}.app/Contents")
     set(CMAKE_INSTALL_MANDIR "${BUNDLE_INSTALL_DIR}/Resources/man")
     set(CLI_INSTALL_DIR "${BUNDLE_INSTALL_DIR}/MacOS")
@@ -405,12 +409,12 @@ elseif(APPLE AND WITH_APP_BUNDLE)
     add_definitions(-DWITH_APP_BUNDLE)
 else()
     include(GNUInstallDirs)
-    set(PROGNAME keepassxc)
+    set(PROGNAME nainazi-passbook)
     set(CLI_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}")
     set(PROXY_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}")
     set(BIN_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}")
-    set(PLUGIN_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/keepassxc")
-    set(DATA_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/keepassxc")
+    set(PLUGIN_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/nainazi-passbook")
+    set(DATA_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/nainazi-passbook")
 endif()
 
 if(WITH_COVERAGE)

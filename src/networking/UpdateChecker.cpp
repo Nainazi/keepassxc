@@ -44,6 +44,12 @@ UpdateChecker::~UpdateChecker()
 
 void UpdateChecker::checkForUpdates(bool manuallyRequested)
 {
+#ifndef KPXC_FEATURE_UPDATES
+    // This personal fork compiles update checks out by default so it does not
+    // query https://api.github.com/repos/keepassxreboot/keepassxc/releases.
+    Q_UNUSED(manuallyRequested);
+    return;
+#else
     // Skip update if we are already performing one
     if (m_reply) {
         return;
@@ -71,6 +77,7 @@ void UpdateChecker::checkForUpdates(bool manuallyRequested)
         connect(m_reply, &QNetworkReply::finished, this, &UpdateChecker::fetchFinished);
         connect(m_reply, &QIODevice::readyRead, this, &UpdateChecker::fetchReadyRead);
     }
+#endif
 }
 
 void UpdateChecker::fetchReadyRead()

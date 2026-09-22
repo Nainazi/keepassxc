@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string notr="true">KeePassXC</string>
+   <string notr="true">奈娜子密码本</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="enabled">
