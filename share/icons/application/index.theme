@@ -1,8 +1,28 @@
 [Icon Theme]
 Name=application
-Comment=KeePassXC Application Icon Theme
+Comment=奈娜子密码本 icon theme
 
-Directories=256x256/apps,scalable/actions,scalable/apps,scalable/categories,scalable/mimetypes,scalable/status
+Directories=16x16/apps,32x32/apps,48x48/apps,128x128/apps,256x256/apps,scalable/actions,scalable/apps,scalable/categories,scalable/mimetypes,scalable/status
+
+[16x16/apps]
+Size=16
+Type=Fixed
+Context=Applications
+
+[32x32/apps]
+Size=32
+Type=Fixed
+Context=Applications
+
+[48x48/apps]
+Size=48
+Type=Fixed
+Context=Applications
+
+[128x128/apps]
+Size=128
+Type=Fixed
+Context=Applications
 
 [scalable/actions]
 Size=48

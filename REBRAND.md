@@ -55,15 +55,38 @@ Icon download and other network features are a separate switch (`KPXC_FEATURE_NE
 
 ### Icons
 
-Replaced artwork (indigo book and lock, not the green KeePassXC shield):
+Application, tray, mime, and Windows icons are generated from one mascot file:
 
-- `share/icons/application/scalable/apps/keepassxc.svg`
-- `keepassxc-locked.svg`, `keepassxc-unlocked.svg`
-- `keepassxc-monochrome-dark.svg`, `keepassxc-monochrome-light.svg`, and the `-locked` pair
-- `share/icons/application/scalable/mimetypes/application-x-keepassxc.svg`
-- `share/icons/application/256x256/apps/keepassxc.png` (raster of the new SVG)
+`share/icons/application/nainazi-mascot-source.png`
+
+That file is the user-approved final artwork and the only source. Do not redraw it or substitute another file. It is a soft flat logo in a blue color series: golden-blonde twin-tails, a blue cat-ear headband with a padlock, a lock choker, a key on an off-shoulder crop top, half-lidded smug eyes, a wide teasing grin with a fang and blush, and a stylized cover-mouth hand with four distinct fingers, fully inside a cream rounded square. There are no earrings.
+
+Regenerate (needs Pillow):
+
+```sh
+python3 utils/regen-nainazi-icons.py
+```
+
+The script writes PNG sizes under `share/icons/application/`, SVG wrappers that embed those PNGs (qrc names stay `keepassxc*.svg`), monochrome tray masks derived from the same picture, and `share/windows/keepassxc.ico` plus `keepassxc-kdbx.ico`. The locked color icon is the same logo darkened so a locked tray can be told apart. The default tray appearance is the color logo.
+
+`share/windows/create-ico.sh` still builds an ICO from the SVG when the CMake `icons` target runs and Inkscape is installed. Commit the files the Python script writes so a Windows build does not depend on that step.
 
 In-app `QIcon` names stay `keepassxc` / `keepassxc-monochrome-*` because that is the qrc theme id (`src/gui/Icons.cpp`). Installed hicolor app icons are renamed to `nainazi-passbook*.svg` / `.png` so a system KeePassXC icon is not overwritten. The desktop `Icon=` is `nainazi-passbook`. Flatpak uses `com.nainazi.passbook`. The KDBX mime icon file name stays `application-x-keepassxc.svg`.
+
+### Theme
+
+View → Theme → 奈娜子 is the default (`GUI/ApplicationTheme` = `nainazi`). Light, dark, automatic, and classic remain. The theme is `NainaziStyle` plus `src/gui/styles/nainazi/nainazistyle.qss`: lavender, pink, and cream palette, rounder buttons and fields. It does not replace the KeePassXC layout.
+
+### Auto-Type
+
+- New configs default the global shortcut to Ctrl+Shift+A. Change it under Settings → Auto-Type. The in-app Always on Top shortcut moved to Ctrl+Shift+O so it does not take the same keys.
+- Auto-Type runs only when the user triggers it. There is no global keylogger and no silent clipboard fill.
+- New configs use an 800 ms start delay and a 50 ms key delay (`AutoTypeStartDelay`, `AutoTypeDelay`). A stored value is left alone. Settings → Auto-Type explains the Chinese IME case: finish composition before typing, and raise the delays if characters are dropped.
+- If it cannot run, the user sees a message: no database, database locked (unlock dialog titled for Auto-Type), no matching entry (including a title that differs across monitors or after focus loss), missing or closed target window, the target window changing mid-sequence, or a Windows administrator / UAC window that blocks keystrokes.
+- New configs lock the database after 15 minutes idle (`Security/LockDatabaseIdle` = true, `Security/LockDatabaseIdleSeconds` = 900) and clear the clipboard after 10 seconds (`Security/ClearClipboardTimeout`). Those were already the defaults; stored values are left alone.
+- New configs generate 24-character passwords with upper case, lower case, numbers, and symbols, excluding look-alike characters (`PasswordGenerator/Length` and the existing symbol flags). A stored generator setup is left alone.
+- Entry and group editors can insert `{USERNAME}{TAB}{PASSWORD}{ENTER}`, `{USERNAME}{TAB}{PASSWORD}{TAB}{ENTER}`, or `{PASSWORD}{ENTER}`. Custom sequences still work.
+- KDBX and the browser protocol are unchanged.
 
 ## Left unchanged on purpose
 
@@ -72,12 +95,25 @@ In-app `QIcon` names stay `keepassxc` / `keepassxc-monochrome-*` because that is
 - D-Bus interface `org.keepassxc.KeePassXC.MainWindow`.
 - Linux config directory `~/.config/keepassxc` and `~/.local/state/keepassxc` (`src/core/Config.cpp`). Windows and macOS `QStandardPaths` follow organization `Nainazi` and application `nainazi-passbook`, so those platforms do not share the official KeePassXC settings folder.
 - Help and donate menu links that open keepassxc.org when the user clicks them. Those are not the update checker.
-- Translation catalogs (`share/translations/*.ts`). Product-name strings that this batch changed are marked `notr` or are no longer the old English source, so a zh_CN catalog cannot put “KeePassXC” back on the window title, About dialog, or welcome screen.
+- Browser protocol strings, the KeePassXC-Browser extension name, native-messaging host names, and links that open keepassxc.org on purpose.
+
+`share/translations/keepassxc_zh_CN.ts` and `keepassxc_zh_TW.ts` translate the new Auto-Type, delay, and product-name strings. The window title and About heading stay hardcoded 奈娜子密码本.
+
+## Windows packaging
+
+The installer path is the existing CPack WiX setup (`CPACK_GENERATOR` is `ZIP;WIX`), plus the NSIS variables already in `src/CMakeLists.txt`.
+
+- Add/Remove Programs name and the WiX product name are 奈娜子密码本. The Start Menu shortcut is 奈娜子密码本.
+- The install directory page has an optional desktop shortcut checkbox (`INSTALLDESKTOPSHORTCUT`). It is off unless the user checks it.
+- `.kdbx` opens with `nainazi-passbook` (WiX `wix-patch.xml`, and NSIS registry commands if that generator is used).
+- Uninstall removes the Start Menu shortcut, the optional desktop shortcut, and this product's `.kdbx` ProgId. `keepassxc-proxy.exe` is still the browser helper and is stopped on install and uninstall. The upgrade GUID is not the official KeePassXC GUID.
+
+A Windows machine builds the installer with the usual KeePassXC Qt 6 / Botan configure, then `cmake --build . --config Release` and `cpack -G WIX`. This environment has no Qt 6 or Botan, so that build was not run here.
 
 ## TODO
 
-- Many settings, reports, and dialog strings still say KeePassXC (`src/gui/ApplicationSettingsWidget*.ui`, database settings, message boxes). They are not the window title or About name.
-- macOS `keepassxc.icns` / `Assets.car` and Windows `keepassxc.ico` are generated by `utils/makeappicons.sh` and `share/windows/create-ico.sh`. Regenerate them from the new SVG before shipping those packages. Source SVG and the 256px PNG are already replaced.
+- KeePassXC-Browser protocol strings, group names, and the extension download prompt still say KeePassXC-Browser on purpose.
+- macOS `keepassxc.icns` / `Assets.car` still need `xcrun actool` on a Mac. Windows `keepassxc.ico` is already generated by `utils/regen-nainazi-icons.py`.
 - Database entry icons under `share/icons/database/` are the KeePass icon set, not the application icon.
 - Action icons, wizard background, and installer banner PNGs are still the upstream art.
 - WiX hyphen-to-underscore ids should be confirmed with a real `cpack -G WIX` run before publishing a Windows installer.

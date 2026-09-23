@@ -84,7 +84,7 @@
               <item>
                <widget class="QCheckBox" name="singleInstanceCheckBox">
                 <property name="text">
-                 <string>Start only a single instance of KeePassXC</string>
+                 <string>Start only a single instance of 奈娜子密码本</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>
@@ -94,7 +94,7 @@
               <item>
                <widget class="QCheckBox" name="launchAtStartup">
                 <property name="text">
-                 <string>Automatically launch KeePassXC at system startup</string>
+                 <string>Automatically launch 奈娜子密码本 at system startup</string>
                 </property>
                </widget>
               </item>
@@ -1341,7 +1341,7 @@
             <number>100</number>
            </property>
            <property name="value">
-            <number>500</number>
+            <number>800</number>
            </property>
           </widget>
          </item>
@@ -1402,7 +1402,7 @@
             <number>1000</number>
            </property>
            <property name="value">
-            <number>25</number>
+            <number>50</number>
            </property>
           </widget>
          </item>

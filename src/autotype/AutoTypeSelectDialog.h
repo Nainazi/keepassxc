@@ -23,6 +23,8 @@
 #include <QDialog>
 #include <QTimer>
 
+class QLabel;
+
 class Database;
 class QMenu;
 
@@ -43,6 +45,7 @@ public:
                     const QList<QSharedPointer<Database>>& dbs,
                     const AutoTypeMatch& lastMatch);
     void setSearchString(const QString& search);
+    void setTargetWindowTitle(const QString& title);
 
 signals:
     void matchActivated(AutoTypeMatch match, bool virtualMode = false);
@@ -61,6 +64,7 @@ private slots:
 private:
     void buildActionMenu();
     void setDelayedSearch(bool state);
+    void updateNotice();
 
     QScopedPointer<Ui::AutoTypeSelectDialog> m_ui;
 
@@ -72,6 +76,8 @@ private:
 
     bool m_virtualMode = false;
     bool m_accepted = false;
+    QString m_targetWindowTitle;
+    QLabel* m_noticeLabel = nullptr;
 };
 
 #endif // KEEPASSX_AUTOTYPESELECTDIALOG_H

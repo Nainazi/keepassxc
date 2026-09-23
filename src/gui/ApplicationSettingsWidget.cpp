@@ -81,6 +81,25 @@ ApplicationSettingsWidget::ApplicationSettingsWidget(QWidget* parent)
 
     m_secUi->setupUi(m_secWidget);
     m_generalUi->setupUi(m_generalWidget);
+
+    QStringList templateNames;
+    for (const auto& preset : AutoType::sequenceTemplates()) {
+        templateNames << QStringLiteral("%1 (%2)").arg(preset.label, preset.sequence);
+    }
+    auto* autoTypeHint = new QLabel(
+        tr("Default global shortcut is Ctrl+Shift+A. Auto-Type runs only when you trigger it. "
+           "New setups wait 800 ms before typing and 50 ms between keys so slow pages and a Chinese IME can keep up. "
+           "Raise the delays below if characters are dropped. If a Chinese IME is composing in the target window, "
+           "finish or switch it off before Auto-Type, or it can take the keystrokes. "
+           "Entry and group editors can insert sequence templates: %1.")
+            .arg(templateNames.join(QStringLiteral("; "))),
+        m_generalUi->tabAutotype);
+    autoTypeHint->setWordWrap(true);
+    m_generalUi->verticalLayout_2->insertWidget(0, autoTypeHint);
+    m_generalUi->autoTypeStartDelaySpinBox->setToolTip(
+        tr("How long to wait after focusing the target window. Increase this for slow pages or a Chinese IME."));
+    m_generalUi->autoTypeDelaySpinBox->setToolTip(
+        tr("Pause between keystrokes. Increase this if a slow page or IME drops characters."));
     addPage(tr("General"), icons()->icon("preferences-other"), m_generalWidget);
     addPage(tr("Security"), icons()->icon("security-high"), m_secWidget);
 #ifdef KPXC_FEATURE_BROWSER
@@ -470,7 +489,7 @@ void ApplicationSettingsWidget::saveSettings()
         config()->get(Config::AutoTypePreferDesktopPortals).toBool() != preferDesktopPortals;
     if (preferDesktopPortalsChanged) {
         getMainWindow()->displayGlobalMessage(
-            tr("Restart KeePassXC to apply the Auto-Type desktop portals preference."), MessageWidget::Information);
+            tr("Restart 奈娜子密码本 to apply the Auto-Type desktop portals preference."), MessageWidget::Information);
     }
     config()->set(Config::AutoTypePreferDesktopPortals, preferDesktopPortals);
     config()->set(Config::AutoTypeDesktopPortalPersistConnection,
@@ -618,7 +637,7 @@ void ApplicationSettingsWidget::resetSettings()
 
 void ApplicationSettingsWidget::importSettings()
 {
-    auto file = fileDialog()->getOpenFileName(this, tr("Import KeePassXC Settings"), {}, "*.ini");
+    auto file = fileDialog()->getOpenFileName(this, tr("Import 奈娜子密码本 Settings"), {}, "*.ini");
     if (file.isEmpty()) {
         return;
     }
@@ -635,7 +654,7 @@ void ApplicationSettingsWidget::importSettings()
 
 void ApplicationSettingsWidget::exportSettings()
 {
-    auto file = fileDialog()->getSaveFileName(this, tr("Export KeePassXC Settings"), {}, "*.ini");
+    auto file = fileDialog()->getSaveFileName(this, tr("Export 奈娜子密码本 Settings"), {}, "*.ini");
     if (file.isEmpty()) {
         return;
     }

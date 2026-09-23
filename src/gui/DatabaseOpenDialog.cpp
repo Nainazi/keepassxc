@@ -164,6 +164,9 @@ void DatabaseOpenDialog::setTarget(DatabaseWidget* dbWidget, const QString& file
 void DatabaseOpenDialog::setIntent(DatabaseOpenDialog::Intent intent)
 {
     m_intent = intent;
+    if (intent == Intent::AutoType) {
+        setWindowTitle(tr("Database is locked — unlock it to use Auto-Type"));
+    }
 }
 
 DatabaseOpenDialog::Intent DatabaseOpenDialog::intent() const
@@ -176,6 +179,7 @@ void DatabaseOpenDialog::clearForms()
     m_view->clearForms();
     m_db.reset();
     m_intent = Intent::None;
+    setWindowTitle(QStringLiteral("解锁数据库 - 奈娜子密码本"));
     if (m_currentDbWidget) {
         disconnect(this, &DatabaseOpenDialog::dialogFinished, m_currentDbWidget, nullptr);
     }

@@ -164,7 +164,7 @@ namespace Utils
             }
 
             if (fileKey->type() != FileKey::KeePass2XMLv2 && fileKey->type() != FileKey::Hashed) {
-                err << QObject::tr("WARNING: You are using an old key file format which KeePassXC may\n"
+                err << QObject::tr("WARNING: You are using an old key file format which 奈娜子密码本 may\n"
                                    "stop supporting in the future.\n\n"
                                    "Please consider generating a new key file.")
                     << Qt::endl;

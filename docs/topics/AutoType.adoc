@@ -12,6 +12,16 @@ You can define a global Auto-Type hotkey that starts the Auto-Type process. To c
 
 Navigate to _Tools_ -> _Settings_ -> Auto-Type tab *(1)*. Click into the _Global Auto-Type shortcut_ box and press the desired key combination that will trigger the Auto-Type process *(2)*.
 
+In 奈娜子密码本 the default global shortcut for a new configuration is kbd:[Ctrl+Shift+A]. It is only registered when you trigger it. Auto-Type does not read the keyboard in the background. If that database is locked, the unlock dialog explains that Auto-Type is waiting. If no entry matches the target window, a message says so instead of failing silently.
+
+Entry and group editors include sequence templates:
+
+* `{USERNAME}{TAB}{PASSWORD}{ENTER}`
+* `{USERNAME}{TAB}{PASSWORD}{TAB}{ENTER}`
+* `{PASSWORD}{ENTER}`
+
+Choosing a template fills the custom sequence field. You can still type any other sequence.
+
 .Auto-Type settings
 image::autotype_settings.png[]
 

@@ -26,6 +26,7 @@
 #include "gui/osutils/OSUtils.h"
 #include "gui/styles/dark/DarkStyle.h"
 #include "gui/styles/light/LightStyle.h"
+#include "gui/styles/nainazi/NainaziStyle.h"
 
 #include <QFileInfo>
 #include <QFileOpenEvent>
@@ -185,6 +186,11 @@ void Application::applyTheme()
         setPalette(s->standardPalette());
         setStyle(s);
         m_darkTheme = true;
+    } else if (appTheme == "nainazi") {
+        auto* s = new NainaziStyle;
+        setPalette(s->standardPalette());
+        setStyle(s);
+        m_darkTheme = false;
     } else {
         // Classic mode, don't check for dark theme on Windows
         // because Qt 5.x does not support it

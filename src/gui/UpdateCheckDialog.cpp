@@ -56,7 +56,7 @@ void UpdateCheckDialog::showUpdateCheckResponse(bool hasUpdate, const QString& v
                "KeePassXC %1 can be <a href=\"https://keepassxc.org/download/\">downloaded here</a>.")
                 .arg(version, KEEPASSXC_VERSION));
     } else {
-        m_ui->statusLabel->setText(tr("You have the latest version of KeePassXC"));
+        m_ui->statusLabel->setText(tr("You have the latest version of 奈娜子密码本"));
     }
 }
 

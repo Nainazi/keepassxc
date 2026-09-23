@@ -28,6 +28,7 @@
 #include "config-keepassx.h"
 #include "gui/EditWidget.h"
 
+class QComboBox;
 class AutoTypeAssociations;
 class AutoTypeAssociationsModel;
 class CustomData;
@@ -219,6 +220,8 @@ private:
     AutoTypeAssociationsModel* const m_autoTypeAssocModel;
     QButtonGroup* const m_autoTypeDefaultSequenceGroup;
     QButtonGroup* const m_autoTypeWindowSequenceGroup;
+    QComboBox* m_autoTypeSequenceTemplate = nullptr;
+    QComboBox* m_windowSequenceTemplate = nullptr;
     QCompleter* const m_usernameCompleter;
     QStringListModel* const m_usernameCompleterModel;
     QTimer m_entryModifiedTimer;

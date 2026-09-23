@@ -383,6 +383,7 @@
      <property name="title">
       <string>Theme</string>
      </property>
+     <addaction name="actionThemeNainazi"/>
      <addaction name="actionThemeAuto"/>
      <addaction name="actionThemeLight"/>
      <addaction name="actionThemeDark"/>
@@ -1141,12 +1142,26 @@
     <string>Toggle Compact Mode</string>
    </property>
   </action>
-  <action name="actionThemeAuto">
+  <action name="actionThemeNainazi">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="checked">
     <bool>true</bool>
+   </property>
+   <property name="text">
+    <string notr="true">奈娜子</string>
+   </property>
+   <property name="toolTip">
+    <string>Pastel theme</string>
+   </property>
+  </action>
+  <action name="actionThemeAuto">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Automatic</string>
@@ -1241,7 +1256,7 @@
     <string>Toggle Always on Top</string>
    </property>
    <property name="shortcut">
-    <string notr="true">Ctrl+Shift+A</string>
+    <string notr="true">Ctrl+Shift+O</string>
    </property>
   </action>
   <action name="actionHideUsernames">

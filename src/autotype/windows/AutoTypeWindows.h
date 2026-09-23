@@ -40,6 +40,7 @@ public:
     WId activeWindow() override;
     QString activeWindowTitle() override;
     bool raiseWindow(WId window) override;
+    bool isTargetWindowElevated(WId window) override;
     AutoTypeExecutor& executor() const override;
 
     void sendCharVirtual(const QChar& ch);

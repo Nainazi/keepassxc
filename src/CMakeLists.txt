@@ -104,6 +104,7 @@ set(gui_SOURCES
         gui/styles/base/BaseStyle.cpp
         gui/styles/dark/DarkStyle.cpp
         gui/styles/light/LightStyle.cpp
+        gui/styles/nainazi/NainaziStyle.cpp
         gui/AboutDialog.cpp
         gui/ActionCollection.cpp
         gui/Application.cpp
@@ -522,12 +523,15 @@ if(WIN32)
     set(CPACK_NSIS_INSTALLED_ICON_NAME "\\\\${PROGNAME}.exe")
     set(CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP "${CMAKE_SOURCE_DIR}/share/windows/installer-wizard.png")
     set(CPACK_NSIS_MUI_UNWELCOMEFINISHPAGE_BITMAP "${CMAKE_SOURCE_DIR}/share/windows/installer-wizard.png")
-    set(CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROGNAME}.lnk' '$INSTDIR\\\\${PROGNAME}.exe'")
-    set(CPACK_NSIS_DELETE_ICONS_EXTRA "Delete '$SMPROGRAMS\\\\$START_MENU\\\\${PROGNAME}.lnk'")
+    set(CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\奈娜子密码本.lnk' '$INSTDIR\\\\${PROGNAME}.exe'")
+    set(CPACK_NSIS_DELETE_ICONS_EXTRA "Delete '$SMPROGRAMS\\\\$START_MENU\\\\奈娜子密码本.lnk'")
+    # .kdbx association for an NSIS build. The WiX installer does this in wix-patch.xml.
+    set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "WriteRegStr HKCR '.kdbx' '' 'NainaziPassbook.kdbx'\nWriteRegStr HKCR 'NainaziPassbook.kdbx' '' '奈娜子密码本 Password Database'\nWriteRegStr HKCR 'NainaziPassbook.kdbx\\\\DefaultIcon' '' '$INSTDIR\\\\${PROGNAME}.exe,1'\nWriteRegStr HKCR 'NainaziPassbook.kdbx\\\\shell\\\\open\\\\command' '' '\\\"$INSTDIR\\\\${PROGNAME}.exe\\\" \\\"%1\\\"'")
     set(CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "ExecWait 'Taskkill /IM ${PROGNAME}.exe'")
     set(CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "${CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS}\nExecWait 'Taskkill /IM keepassxc-proxy.exe /F'")
     set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "ExecWait 'Taskkill /IM ${PROGNAME}.exe'")
     set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS}\nExecWait 'Taskkill /IM keepassxc-proxy.exe /F'")
+    set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS}\nReadRegStr $0 HKCR '.kdbx' ''\nStrCmp $0 'NainaziPassbook.kdbx' 0 +2\nDeleteRegKey HKCR '.kdbx'\nDeleteRegKey HKCR 'NainaziPassbook.kdbx'")
     set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/Nainazi/keepassxc")
     set(CPACK_NSIS_DISPLAY_NAME "奈娜子密码本")
     set(CPACK_NSIS_PACKAGE_NAME "奈娜子密码本 v${KEEPASSXC_VERSION}")
@@ -544,7 +548,7 @@ if(WIN32)
             "${CMAKE_SOURCE_DIR}/share/windows/KPXC_InstallDir.wxs"
             "${CMAKE_SOURCE_DIR}/share/windows/KPXC_InstallDirDlg.wxs"
             "${CMAKE_SOURCE_DIR}/share/windows/KPXC_ExitDlg.wxs")
-    set(CPACK_WIX_PROPERTY_ARPURLINFOABOUT  "https://keepassxc.org")
+    set(CPACK_WIX_PROPERTY_ARPURLINFOABOUT  "https://github.com/Nainazi/keepassxc")
     set(CPACK_WIX_EXTENSIONS "WixUtilExtension.dll")
     string(TOLOWER "${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" _windows_package_arch)
     if(NOT _windows_package_arch)

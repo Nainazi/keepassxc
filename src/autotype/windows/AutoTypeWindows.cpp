@@ -17,6 +17,9 @@
  */
 
 #include "AutoTypeWindows.h"
+
+#include <QByteArray>
+
 #include "core/Tools.h"
 #include "gui/osutils/OSUtils.h"
 #include "gui/osutils/winutils/WinUtils.h"
@@ -85,6 +88,54 @@ bool AutoTypePlatformWin::raiseWindow(WId window)
     HWND hwnd = reinterpret_cast<HWND>(window);
 
     return ::BringWindowToTop(hwnd) && ::SetForegroundWindow(hwnd);
+}
+
+namespace
+{
+    DWORD processIntegrityLevel(HANDLE process)
+    {
+        HANDLE token = nullptr;
+        if (!::OpenProcessToken(process, TOKEN_QUERY, &token)) {
+            return 0;
+        }
+
+        DWORD length = 0;
+        ::GetTokenInformation(token, TokenIntegrityLevel, nullptr, 0, &length);
+        QByteArray buffer(static_cast<int>(length), 0);
+        DWORD level = 0;
+        if (length > 0 && ::GetTokenInformation(token, TokenIntegrityLevel, buffer.data(), length, &length)) {
+            auto* label = reinterpret_cast<PTOKEN_MANDATORY_LABEL>(buffer.data());
+            const auto authority = static_cast<DWORD>(*::GetSidSubAuthorityCount(label->Label.Sid) - 1);
+            level = *::GetSidSubAuthority(label->Label.Sid, authority);
+        }
+        ::CloseHandle(token);
+        return level;
+    }
+} // namespace
+
+bool AutoTypePlatformWin::isTargetWindowElevated(WId window)
+{
+    auto* hwnd = reinterpret_cast<HWND>(window);
+    if (!hwnd) {
+        return false;
+    }
+
+    DWORD pid = 0;
+    ::GetWindowThreadProcessId(hwnd, &pid);
+    if (pid == 0 || pid == ::GetCurrentProcessId()) {
+        return false;
+    }
+
+    const DWORD selfLevel = processIntegrityLevel(::GetCurrentProcess());
+    HANDLE target = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if (!target) {
+        // A normal process cannot open an administrator window.
+        return ::GetLastError() == ERROR_ACCESS_DENIED;
+    }
+
+    const DWORD targetLevel = processIntegrityLevel(target);
+    ::CloseHandle(target);
+    return selfLevel != 0 && targetLevel > selfLevel;
 }
 
 //
