@@ -59,7 +59,7 @@ Application, tray, mime, and Windows icons are generated from one mascot file:
 
 `share/icons/application/nainazi-mascot-source.png`
 
-That file is the only artwork source. It is a soft flat original logo in a blue color series: blonde twin-tails, a blue cat-ear headband with the padlock on the band, a wink, and an ultra-simple flat hand with four short rounded fingers grouped together covering the mouth, fully inside a cream rounded square. Earlier lookalike-of-reference, blocky geometric, and full-body drawings are not sources.
+That file is the only artwork source. It is a soft flat original logo in a blue color series: blonde twin-tails, a blue cat-ear headband with the padlock on the band, a wink, an ultra-simple flat hand with four short rounded fingers grouped together covering the mouth, and an off-shoulder crop top, fully inside a cream rounded square. Earlier lookalike-of-reference, blocky geometric, and full-body drawings are not sources.
 
 Regenerate (needs Pillow):
 
