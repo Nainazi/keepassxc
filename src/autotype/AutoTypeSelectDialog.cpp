@@ -146,7 +146,8 @@ void AutoTypeSelectDialog::updateNotice()
         if (m_targetWindowTitle.isEmpty()) {
             text = tr("The target window has no title, so 奈娜子密码本 cannot match an entry. Search below, or cancel.");
         } else {
-            text = tr("No entry matches the window “%1”. Search open databases below, or cancel.")
+            text = tr("No entry matches the window “%1”. The title can differ between monitors or after the window "
+                      "loses focus. Search open databases below, or cancel.")
                        .arg(m_targetWindowTitle);
         }
     }

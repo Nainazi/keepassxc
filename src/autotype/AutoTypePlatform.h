@@ -32,6 +32,13 @@ public:
     virtual WId activeWindow() = 0;
     virtual QString activeWindowTitle() = 0;
     virtual bool raiseWindow(WId window) = 0;
+    // True when the target is a higher-integrity window (Windows UAC / administrator).
+    // Other platforms can send input, so the default is false.
+    virtual bool isTargetWindowElevated(WId window)
+    {
+        Q_UNUSED(window);
+        return false;
+    }
     virtual bool hasWindowAccess()
     {
         return true;

@@ -453,7 +453,7 @@ QSharedPointer<CompositeKey> DatabaseOpenWidget::buildDatabaseKey()
             && !config()->get(Config::Messages_NoLegacyKeyFileWarning).toBool()) {
             QMessageBox legacyWarning;
             legacyWarning.setWindowTitle(tr("Old key file format"));
-            legacyWarning.setText(tr("You are using an old key file format which KeePassXC may<br>"
+            legacyWarning.setText(tr("You are using an old key file format which 奈娜子密码本 may<br>"
                                      "stop supporting in the future.<br><br>"
                                      "Please consider generating a new key file by going to:<br>"
                                      "<strong>Database &gt; Database Security &gt; Change Key File.</strong><br>"));
@@ -525,7 +525,7 @@ bool DatabaseOpenWidget::browseKeyFile()
     }
     if (filename.endsWith(".kdbx")
         && MessageBox::warning(this,
-                               tr("KeePassXC database file selected"),
+                               tr("奈娜子密码本 database file selected"),
                                tr("The file you selected looks like a database file.\nA database file is NOT a key "
                                   "file!\n\nAre you sure you want to continue with this file?."),
                                MessageBox::Button::Yes | MessageBox::Button::Cancel,

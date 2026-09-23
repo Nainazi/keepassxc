@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>KeePassXC - Passkey credentials</string>
+   <string>奈娜子密码本 - Passkey credentials</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

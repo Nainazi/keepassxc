@@ -349,14 +349,31 @@ void AutoType::executeAutoTypeActions(const Entry* entry,
         window = m_platform->activeWindow();
     }
 
+    if (window != 0 && m_platform->isTargetWindowElevated(window)) {
+        if (getMainWindow()) {
+            MessageBox::warning(
+                getMainWindow(),
+                tr("Auto-Type"),
+                tr("Auto-Type cannot type into this window because Windows is running it as administrator (UAC). "
+                   "A normal 奈娜子密码本 process is not allowed to send keystrokes to a higher-privilege window. "
+                   "Type the password yourself, or start 奈娜子密码本 with the same privileges."));
+        }
+        m_inAutoType.unlock();
+        emit autotypeFinished();
+        return;
+    }
+
     for (const auto& action : asConst(actions)) {
-        // Cancel Auto-Type if the active window changed
+        // Cancel Auto-Type if the active window changed or disappeared
         if (m_platform->activeWindow() != window) {
             qWarning("Active window changed, interrupting auto-type.");
             if (getMainWindow()) {
                 MessageBox::warning(getMainWindow(),
                                     tr("Auto-Type"),
-                                    tr("Auto-Type stopped because the target window changed or lost focus."));
+                                    tr("Auto-Type stopped because the target window changed, moved to another "
+                                       "monitor, or lost focus. Focus the login window and try again. If a Chinese "
+                                       "IME is composing in that window, finish the composition first so it does not "
+                                       "take the keystrokes."));
             }
             break;
         }
@@ -507,7 +524,8 @@ void AutoType::startGlobalAutoType(const QString& search)
     if (m_windowForGlobal == 0 && m_windowTitleForGlobal.isEmpty() && getMainWindow()) {
         MessageBox::warning(getMainWindow(),
                             tr("Auto-Type"),
-                            tr("Could not detect a target window. Focus the login window and try Auto-Type again."));
+                            tr("Could not detect a target window. It may have closed or lost focus. "
+                               "Focus the login window and try Auto-Type again."));
         return;
     }
 
@@ -609,10 +627,13 @@ void AutoType::performGlobalAutoType(const QList<QSharedPointer<Database>>& dbLi
         // Only one match and not asking, do it!
         executeAutoTypeActions(matchList.first().first, matchList.first().second, m_windowForGlobal);
     } else {
-        const QString message = m_windowTitleForGlobal.isEmpty()
-                                    ? tr("Auto-Type could not read the target window, and no entry was selected.")
-                                    : tr("No entry in the unlocked databases matches the window “%1”.")
-                                          .arg(m_windowTitleForGlobal);
+        const QString message =
+            m_windowTitleForGlobal.isEmpty()
+                ? tr("Auto-Type could not read the target window. It may have closed or moved to another monitor, "
+                     "and no entry was selected.")
+                : tr("No entry in the unlocked databases matches the window “%1”. The title can differ between "
+                     "monitors or after the window loses focus.")
+                      .arg(m_windowTitleForGlobal);
         qWarning().noquote() << "Auto-Type:" << message;
         MessageBox::warning(getMainWindow(), tr("Auto-Type"), message);
         emit autotypeFinished();

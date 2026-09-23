@@ -249,16 +249,16 @@
         <translation>您确定要将所有设置重置为默认值吗？</translation>
     </message>
     <message>
-        <source>Import KeePassXC Settings</source>
-        <translation>导入 KeePassXC 设置</translation>
+        <source>Import 奈娜子密码本 Settings</source>
+        <translation>导入 奈娜子密码本 设置</translation>
     </message>
     <message>
         <source>Failed to import settings from %1, not a valid settings file.</source>
         <translation>从 %1 导入设置失败，不是有效的设置文件。</translation>
     </message>
     <message>
-        <source>Export KeePassXC Settings</source>
-        <translation>导出 KeePassXC 设置</translation>
+        <source>Export 奈娜子密码本 Settings</source>
+        <translation>导出 奈娜子密码本 设置</translation>
     </message>
     <message>
         <source>Small</source>
@@ -285,8 +285,20 @@
         <translation>无</translation>
     </message>
     <message>
-        <source>Restart KeePassXC to apply the Auto-Type desktop portals preference.</source>
-        <translation>重启 KeePassXC 以应用自动输入桌面门户首选项。</translation>
+        <source>Restart 奈娜子密码本 to apply the Auto-Type desktop portals preference.</source>
+        <translation>重启 奈娜子密码本 以应用自动输入桌面门户首选项。</translation>
+    </message>
+    <message>
+        <source>Default global shortcut is Ctrl+Shift+A. Auto-Type runs only when you trigger it. New setups wait 800 ms before typing and 50 ms between keys so slow pages and a Chinese IME can keep up. Raise the delays below if characters are dropped. If a Chinese IME is composing in the target window, finish or switch it off before Auto-Type, or it can take the keystrokes. Entry and group editors can insert sequence templates: %1.</source>
+        <translation>默认全局快捷键是 Ctrl+Shift+A。自动输入只在你主动触发时运行。新配置会在开始输入前等待 800 毫秒，并在按键之间等待 50 毫秒，以便慢速页面和中文输入法跟上。如果丢字，请加大下面的延迟。如果目标窗口正在用中文输入法组字，请先完成或关闭输入法再自动输入，否则输入法会吃掉按键。条目和群组编辑器可以插入这些序列模板：%1。</translation>
+    </message>
+    <message>
+        <source>How long to wait after focusing the target window. Increase this for slow pages or a Chinese IME.</source>
+        <translation>聚焦目标窗口后等待多久再开始输入。页面较慢或使用中文输入法时可以加大。</translation>
+    </message>
+    <message>
+        <source>Pause between keystrokes. Increase this if a slow page or IME drops characters.</source>
+        <translation>两次按键之间的停顿。如果慢速页面或输入法丢字，请加大。</translation>
     </message>
 </context>
 <context>
@@ -778,12 +790,12 @@
         <translation>需要权限</translation>
     </message>
     <message>
-        <source>KeePassXC requires the Accessibility permission in order to perform entry level Auto-Type. If you already granted permission, you may have to restart KeePassXC.</source>
-        <translation>KeePassXC 需要辅助功能权限以实现条目自动输入。如果您已经授予此权限，您可能需要重新启动 KeePassXC。</translation>
+        <source>奈娜子密码本 requires the Accessibility permission in order to perform entry level Auto-Type. If you already granted permission, you may have to restart 奈娜子密码本.</source>
+        <translation>奈娜子密码本 需要辅助功能权限以实现条目自动输入。如果您已经授予此权限，您可能需要重新启动 奈娜子密码本。</translation>
     </message>
     <message>
-        <source>KeePassXC requires the Accessibility and Screen Recorder permission in order to perform global Auto-Type. Screen Recording is necessary to use the window title to find entries. If you already granted permission, you may have to restart KeePassXC.</source>
-        <translation>KeePassXC 需要辅助功能和录制屏幕权限以实现全局自动输入。使用窗口标题匹配条目需要录制屏幕权限。如果您已经授予此权限，您可能需要重新启动 KeePassXC。</translation>
+        <source>奈娜子密码本 requires the Accessibility and Screen Recorder permission in order to perform global Auto-Type. Screen Recording is necessary to use the window title to find entries. If you already granted permission, you may have to restart 奈娜子密码本.</source>
+        <translation>奈娜子密码本 需要辅助功能和录制屏幕权限以实现全局自动输入。使用窗口标题匹配条目需要录制屏幕权限。如果您已经授予此权限，您可能需要重新启动 奈娜子密码本。</translation>
     </message>
     <message>
         <source>Invalid entry provided</source>
@@ -816,6 +828,54 @@
     <message>
         <source>Entry has invalid TOTP settings</source>
         <translation>条目具有无效的 TOTP 设置</translation>
+    </message>
+    <message>
+        <source>Auto-Type is not available on this desktop session.</source>
+        <translation>此桌面会话无法使用自动输入。</translation>
+    </message>
+    <message>
+        <source>Auto-Type cannot type into this window because Windows is running it as administrator (UAC). A normal 奈娜子密码本 process is not allowed to send keystrokes to a higher-privilege window. Type the password yourself, or start 奈娜子密码本 with the same privileges.</source>
+        <translation>无法向此窗口自动输入，因为 Windows 正以管理员身份运行它（UAC）。普通的奈娜子密码本进程不能向更高权限的窗口发送按键。请自行输入密码，或以相同权限启动奈娜子密码本。</translation>
+    </message>
+    <message>
+        <source>Auto-Type stopped because the target window changed, moved to another monitor, or lost focus. Focus the login window and try again. If a Chinese IME is composing in that window, finish the composition first so it does not take the keystrokes.</source>
+        <translation>自动输入已停止，因为目标窗口发生了变化、移到了另一台显示器，或失去了焦点。请聚焦登录窗口后重试。如果该窗口正在用中文输入法组字，请先完成组字，以免输入法吃掉按键。</translation>
+    </message>
+    <message>
+        <source>Username, Tab, password, Enter</source>
+        <translation>用户名、Tab、密码、Enter</translation>
+    </message>
+    <message>
+        <source>Username, Tab, password, Tab, Enter</source>
+        <translation>用户名、Tab、密码、Tab、Enter</translation>
+    </message>
+    <message>
+        <source>Password, Enter</source>
+        <translation>密码、Enter</translation>
+    </message>
+    <message>
+        <source>This entry has no Auto-Type sequence.</source>
+        <translation>此条目没有自动输入序列。</translation>
+    </message>
+    <message>
+        <source>Auto-Type cannot type into 奈娜子密码本. Switch to the login window, then press the global shortcut again.</source>
+        <translation>不能向奈娜子密码本自身自动输入。请切换到登录窗口，然后再次按下全局快捷键。</translation>
+    </message>
+    <message>
+        <source>Could not detect a target window. It may have closed or lost focus. Focus the login window and try Auto-Type again.</source>
+        <translation>未能检测到目标窗口。它可能已关闭或失去焦点。请聚焦登录窗口后再次使用自动输入。</translation>
+    </message>
+    <message>
+        <source>An Auto-Type window is already open.</source>
+        <translation>自动输入窗口已经打开。</translation>
+    </message>
+    <message>
+        <source>Auto-Type could not read the target window. It may have closed or moved to another monitor, and no entry was selected.</source>
+        <translation>无法读取目标窗口。它可能已关闭或移到了另一台显示器，并且没有选中条目。</translation>
+    </message>
+    <message>
+        <source>No entry in the unlocked databases matches the window “%1”. The title can differ between monitors or after the window loses focus.</source>
+        <translation>已解锁的数据库中没有条目匹配窗口“%1”。窗口标题在不同显示器上或失去焦点后可能不同。</translation>
     </message>
 </context>
 <context>
@@ -889,8 +949,8 @@
 <context>
     <name>AutoTypeSelectDialog</name>
     <message>
-        <source>Auto-Type - KeePassXC</source>
-        <translation>自动输入 - KeePassXC</translation>
+        <source>Auto-Type - 奈娜子密码本</source>
+        <translation>自动输入 - 奈娜子密码本</translation>
     </message>
     <message>
         <source>Double click a row to perform Auto-Type or find an entry using the search:</source>
@@ -978,6 +1038,14 @@ Ctrl+Shift+4 - 复制 URL&lt;br/&gt;
         <source>You can use advanced search queries to find any entry in your open databases.</source>
         <translation>您可以使用高级搜索查询在打开的数据库中查找任何条目。</translation>
     </message>
+    <message>
+        <source>The target window has no title, so 奈娜子密码本 cannot match an entry. Search below, or cancel.</source>
+        <translation>目标窗口没有标题，奈娜子密码本无法匹配条目。请在下方搜索，或取消。</translation>
+    </message>
+    <message>
+        <source>No entry matches the window “%1”. The title can differ between monitors or after the window loses focus. Search open databases below, or cancel.</source>
+        <translation>没有条目匹配窗口“%1”。窗口标题在不同显示器上或失去焦点后可能不同。请在下方搜索已打开的数据库，或取消。</translation>
+    </message>
 </context>
 <context>
     <name>BinaryStream</name>
@@ -993,8 +1061,8 @@ Ctrl+Shift+4 - 复制 URL&lt;br/&gt;
 <context>
     <name>BrowserAccessControlDialog</name>
     <message>
-        <source>KeePassXC - Browser Access Request</source>
-        <translation>KeePassXC - 浏览器访问请求</translation>
+        <source>奈娜子密码本 - Browser Access Request</source>
+        <translation>奈娜子密码本 - 浏览器访问请求</translation>
     </message>
     <message>
         <source>%1 is requesting access to the following entries:</source>
@@ -1046,8 +1114,8 @@ Please select the correct database for saving credentials.</source>
 请选择正确的数据库以保存凭据。</translation>
     </message>
     <message>
-        <source>KeePassXC - Select Database</source>
-        <translation>KeePassXC - 选择数据库</translation>
+        <source>奈娜子密码本 - Select Database</source>
+        <translation>奈娜子密码本 - 选择数据库</translation>
     </message>
 </context>
 <context>
@@ -1085,8 +1153,8 @@ Please select the correct database for saving credentials.</source>
         <translation>用户名：%1</translation>
     </message>
     <message>
-        <source>KeePassXC - Passkey credentials</source>
-        <translation>KeePassXC - 通行密钥凭据</translation>
+        <source>奈娜子密码本 - Passkey credentials</source>
+        <translation>奈娜子密码本 - 通行密钥凭据</translation>
     </message>
     <message>
         <source>Add to existing entry</source>
@@ -1160,44 +1228,44 @@ Do you want to delete the entry?
         <translation>%1（通行密钥）</translation>
     </message>
     <message>
-        <source>KeePassXC - Create a new group</source>
-        <translation>KeePassXC - 创建新群组</translation>
+        <source>奈娜子密码本 - Create a new group</source>
+        <translation>奈娜子密码本 - 创建新群组</translation>
     </message>
     <message>
         <source>Disable</source>
         <translation>禁用</translation>
     </message>
     <message>
-        <source>KeePassXC - Overwrite existing key?</source>
-        <translation>KeePassXC - 覆盖现有的密钥吗？</translation>
+        <source>奈娜子密码本 - Overwrite existing key?</source>
+        <translation>奈娜子密码本 - 覆盖现有的密钥吗？</translation>
     </message>
     <message>
-        <source>KeePassXC - Update Entry</source>
-        <translation>KeePassXC - 更新条目</translation>
+        <source>奈娜子密码本 - Update Entry</source>
+        <translation>奈娜子密码本 - 更新条目</translation>
     </message>
     <message>
-        <source>KeePassXC - Delete entry</source>
-        <translation>KeePassXC - 删除条目</translation>
+        <source>奈娜子密码本 - Delete entry</source>
+        <translation>奈娜子密码本 - 删除条目</translation>
     </message>
     <message>
-        <source>KeePassXC - New key association request</source>
-        <translation>KeePassXC - 新的密钥关联请求</translation>
+        <source>奈娜子密码本 - New key association request</source>
+        <translation>奈娜子密码本 - 新的密钥关联请求</translation>
     </message>
     <message>
         <source>Passkey</source>
         <translation>通行密钥</translation>
     </message>
     <message>
-        <source>KeePassXC - Passkey credentials</source>
-        <translation>KeePassXC - 通行密钥凭据</translation>
+        <source>奈娜子密码本 - Passkey credentials</source>
+        <translation>奈娜子密码本 - 通行密钥凭据</translation>
     </message>
     <message>
         <source>Register a new passkey to this entry:</source>
         <translation>注册新通行密钥到此条目：</translation>
     </message>
     <message>
-        <source>KeePassXC - Update passkey</source>
-        <translation>KeePassXC - 更新通行密钥</translation>
+        <source>奈娜子密码本 - Update passkey</source>
+        <translation>奈娜子密码本 - 更新通行密钥</translation>
     </message>
     <message>
         <source>Entry already has a passkey.
@@ -1686,8 +1754,12 @@ Backup database located at %2</source>
 <context>
     <name>DatabaseOpenDialog</name>
     <message>
-        <source>Unlock Database - KeePassXC</source>
-        <translation>解锁数据库 - KeePassXC</translation>
+        <source>Unlock Database - 奈娜子密码本</source>
+        <translation>解锁数据库 - 奈娜子密码本</translation>
+    </message>
+    <message>
+        <source>Database is locked — unlock it to use Auto-Type</source>
+        <translation>数据库已锁定 — 解锁后才能使用自动输入</translation>
     </message>
 </context>
 <context>
@@ -1791,8 +1863,8 @@ To prevent this error from appearing, you must go to &quot;Database Settings / S
         <translation>旧版密钥文件格式</translation>
     </message>
     <message>
-        <source>You are using an old key file format which KeePassXC may&lt;br&gt;stop supporting in the future.&lt;br&gt;&lt;br&gt;Please consider generating a new key file by going to:&lt;br&gt;&lt;strong&gt;Database &amp;gt; Database Security &amp;gt; Change Key File.&lt;/strong&gt;&lt;br&gt;</source>
-        <translation>您使用的是旧版密钥文件格式，KeePassXC 可能会在将来停止对它的支持。&lt;br&gt;&lt;br&gt;请考虑重新生成一个新密钥文件，前往：&lt;br&gt;&lt;strong&gt;数据库 &amp;gt; 数据库安全 &amp;gt; 更改密钥文件&lt;/strong&gt;。&lt;br&gt;</translation>
+        <source>You are using an old key file format which 奈娜子密码本 may&lt;br&gt;stop supporting in the future.&lt;br&gt;&lt;br&gt;Please consider generating a new key file by going to:&lt;br&gt;&lt;strong&gt;Database &amp;gt; Database Security &amp;gt; Change Key File.&lt;/strong&gt;&lt;br&gt;</source>
+        <translation>您使用的是旧版密钥文件格式，奈娜子密码本 可能会在将来停止对它的支持。&lt;br&gt;&lt;br&gt;请考虑重新生成一个新密钥文件，前往：&lt;br&gt;&lt;strong&gt;数据库 &amp;gt; 数据库安全 &amp;gt; 更改密钥文件&lt;/strong&gt;。&lt;br&gt;</translation>
     </message>
     <message>
         <source>Don&apos;t show this warning again</source>
@@ -1845,8 +1917,8 @@ If you don&apos;t have a key file or don&apos;t know what that is, you don&apos;
 如果您没有密钥文件，或者不知道这是什么，就不需要选择。</translation>
     </message>
     <message>
-        <source>KeePassXC database file selected</source>
-        <translation>KeePassXC 数据库文件被选择</translation>
+        <source>奈娜子密码本 database file selected</source>
+        <translation>奈娜子密码本 数据库文件被选择</translation>
     </message>
     <message>
         <source>The file you selected looks like a database file.
@@ -2000,12 +2072,12 @@ This may prevent connection to the browser plugin.</source>
 这可能会影响与浏览器插件的连接。</translation>
     </message>
     <message>
-        <source>No shared encryption keys found in KeePassXC settings.</source>
-        <translation>未在 KeePassXC 设置中找到共享加密密钥。</translation>
+        <source>No shared encryption keys found in 奈娜子密码本 settings.</source>
+        <translation>未在 奈娜子密码本 设置中找到共享加密密钥。</translation>
     </message>
     <message numerus="yes">
-        <source>Successfully removed %n encryption key(s) from KeePassXC settings.</source>
-        <translation><numerusform>已成功从 KeePassXC 设置中删除了 %n 个加密密钥。</numerusform></translation>
+        <source>Successfully removed %n encryption key(s) from 奈娜子密码本 settings.</source>
+        <translation><numerusform>已成功从 奈娜子密码本 设置中删除了 %n 个加密密钥。</numerusform></translation>
     </message>
     <message>
         <source>Do you really want forget all site-specific settings on every entry?
@@ -2763,6 +2835,10 @@ This is definitely a bug, please report it to the developers.</source>
         <comment>Database tab name modifier</comment>
         <translation>%1 [临时]</translation>
     </message>
+    <message>
+        <source>No database is open. Open and unlock a database in 奈娜子密码本 before using Auto-Type.</source>
+        <translation>没有打开的数据库。请先在奈娜子密码本中打开并解锁数据库，然后再使用自动输入。</translation>
+    </message>
 </context>
 <context>
     <name>DatabaseWidget</name>
@@ -2867,9 +2943,9 @@ Save changes?</source>
         <translation>禁用安全保存？</translation>
     </message>
     <message>
-        <source>KeePassXC has failed to save the database multiple times. This is likely caused by file sync services holding a lock on the save file.
+        <source>奈娜子密码本 has failed to save the database multiple times. This is likely caused by file sync services holding a lock on the save file.
 Disable safe saves and try again?</source>
-        <translation>KeePassXC 未能多次保存数据库。这可能是因为文件同步服务锁定了要保存的文件。
+        <translation>奈娜子密码本 未能多次保存数据库。这可能是因为文件同步服务锁定了要保存的文件。
 禁用安全保存并重试？</translation>
     </message>
     <message>
@@ -3780,9 +3856,9 @@ Would you like to correct it?</source>
         <translation>同步</translation>
     </message>
     <message>
-        <source>Your KeePassXC version does not support sharing this container type.
+        <source>Your 奈娜子密码本 version does not support sharing this container type.
 Supported extensions are: %1.</source>
-        <translation>您的 KeePassXC 版本不支持共享此容器类型。
+        <translation>您的 奈娜子密码本 版本不支持共享此容器类型。
 支持的扩展包括：%1。</translation>
     </message>
     <message>
@@ -4743,8 +4819,8 @@ This will leave your passwords and sensitive information vulnerable!
 <context>
     <name>GlobalShortcutsPortal</name>
     <message>
-        <source>KeePassXC - Global Shortcuts</source>
-        <translation>KeePassXC - 全局快捷键</translation>
+        <source>奈娜子密码本 - Global Shortcuts</source>
+        <translation>奈娜子密码本 - 全局快捷键</translation>
     </message>
     <message>
         <source>The XDG Desktop Portal for global shortcuts is not available on this system.</source>
@@ -5723,8 +5799,8 @@ If this reoccurs, then your database file may be corrupt.</source>
         <translation>旧版密钥文件格式</translation>
     </message>
     <message>
-        <source>You selected a key file in an old format which KeePassXC&lt;br&gt;may stop supporting in the future.&lt;br&gt;&lt;br&gt;Please consider generating a new key file instead.</source>
-        <translation>您使用的是旧版密钥文件格式，KeePassXC 可能会在将来停止对它的支持。&lt;br&gt;&lt;br&gt;请考虑重新生成一个新密钥文件。</translation>
+        <source>You selected a key file in an old format which 奈娜子密码本&lt;br&gt;may stop supporting in the future.&lt;br&gt;&lt;br&gt;Please consider generating a new key file instead.</source>
+        <translation>您使用的是旧版密钥文件格式，奈娜子密码本 可能会在将来停止对它的支持。&lt;br&gt;&lt;br&gt;请考虑重新生成一个新密钥文件。</translation>
     </message>
     <message>
         <source>Error loading the key file '%1'
@@ -6173,8 +6249,8 @@ Are you sure you want to continue with this file?</source>
         <translation>是否在启动时检查更新？</translation>
     </message>
     <message>
-        <source>Would you like KeePassXC to check for updates on startup?</source>
-        <translation>您是否希望 KeePassXC 在启动时检查更新？</translation>
+        <source>Would you like 奈娜子密码本 to check for updates on startup?</source>
+        <translation>您是否希望 奈娜子密码本 在启动时检查更新？</translation>
     </message>
     <message>
         <source>You can always check for updates manually from the application menu.</source>
@@ -6493,10 +6569,10 @@ Are you sure you want to continue with this file?</source>
         <translation>设置远程同步…</translation>
     </message>
     <message>
-        <source>WARNING: You are using a development snapshot build of KeePassXC.
+        <source>WARNING: You are using a development snapshot build of 奈娜子密码本.
 Maintain a backup of your databases in the event of unknown bugs.
 This version is not meant for production use.</source>
-        <translation>警告：您正在使用 KeePassXC 的开发快照版本。
+        <translation>警告：您正在使用 奈娜子密码本 的开发快照版本。
 请备份您的数据库，以防出现未知错误。
 此版本不适用于生产用途。</translation>
     </message>
@@ -6539,6 +6615,10 @@ This version is not meant for production use.</source>
     <message numerus="yes">
         <source>Permanently delete the selected entry(s)</source>
         <translation><numerusform>永久删除所选条目</numerusform></translation>
+    </message>
+    <message>
+        <source>Quit 奈娜子密码本</source>
+        <translation>退出奈娜子密码本</translation>
     </message>
 </context>
 <context>
@@ -6975,8 +7055,8 @@ This version is not meant for production use.</source>
 <context>
     <name>PasskeyExportDialog</name>
     <message>
-        <source>KeePassXC - Passkey Export</source>
-        <translation>KeePassXC - 通行密钥导出</translation>
+        <source>奈娜子密码本 - Passkey Export</source>
+        <translation>奈娜子密码本 - 通行密钥导出</translation>
     </message>
     <message>
         <source>Filenames will be generated with title and .passkey file extension.</source>
@@ -7033,8 +7113,8 @@ Do you want to overwrite it?
 <context>
     <name>PasskeyImportDialog</name>
     <message>
-        <source>KeePassXC - Passkey Import</source>
-        <translation>KeePassXC - 通行密钥导入</translation>
+        <source>奈娜子密码本 - Passkey Import</source>
+        <translation>奈娜子密码本 - 通行密钥导入</translation>
     </message>
     <message>
         <source>Username: %1</source>
@@ -8709,11 +8789,11 @@ Available commands:
         <translation>无法加载密钥文件 %1：%2</translation>
     </message>
     <message>
-        <source>WARNING: You are using an old key file format which KeePassXC may
+        <source>WARNING: You are using an old key file format which 奈娜子密码本 may
 stop supporting in the future.
 
 Please consider generating a new key file.</source>
-        <translation>警告：您使用的是旧版密钥文件格式，KeePassXC 可能会在将来停止对它的支持。
+        <translation>警告：您使用的是旧版密钥文件格式，奈娜子密码本 可能会在将来停止对它的支持。
 
 请考虑重新生成一个新密钥文件。</translation>
     </message>
@@ -9121,20 +9201,20 @@ CPU 架构：%2
         <translation>锁定数据库失败。</translation>
     </message>
     <message>
-        <source>Another instance of KeePassXC is already running.</source>
-        <translation>另一个 KeePassXC 实例已在运行。</translation>
+        <source>Another instance of 奈娜子密码本 is already running.</source>
+        <translation>另一个 奈娜子密码本 实例已在运行。</translation>
     </message>
     <message>
-        <source>KeePassXC is not running. No open database to lock</source>
-        <translation>KeePassXC 未在运行。没有可锁定的已打开数据库</translation>
+        <source>奈娜子密码本 is not running. No open database to lock</source>
+        <translation>奈娜子密码本 未在运行。没有可锁定的已打开数据库</translation>
     </message>
     <message>
         <source>Fatal error while testing the cryptographic functions.</source>
         <translation>在测试加密函数时发生致命错误。</translation>
     </message>
     <message>
-        <source>KeePassXC - Error</source>
-        <translation>KeePassXC - 错误</translation>
+        <source>奈娜子密码本 - Error</source>
+        <translation>奈娜子密码本 - 错误</translation>
     </message>
     <message>
         <source>Database password: </source>
@@ -9257,8 +9337,8 @@ This option is deprecated, use --set-key-file instead.</source>
         <translation>无可用的快速解锁提供者</translation>
     </message>
     <message>
-        <source>Failed to init KeePassXC crypto.</source>
-        <translation>初始化 KeePassXC 加密失败。</translation>
+        <source>Failed to init 奈娜子密码本 crypto.</source>
+        <translation>初始化 奈娜子密码本 加密失败。</translation>
     </message>
     <message>
         <source>Failed to encrypt key data.</source>
@@ -9778,8 +9858,8 @@ This option is deprecated, use --set-key-file instead.</source>
         <translation>也显示已从报告中排除的条目</translation>
     </message>
     <message>
-        <source>This build of KeePassXC does not have network functions. Networking is required to check your passwords against Have I Been Pwned databases.</source>
-        <translation>此版本 KeePassXC 不包含网络功能。如要通过 Have I Been Pwned 服务检查您的密码，就必须可以访问网络。</translation>
+        <source>This build of 奈娜子密码本 does not have network functions. Networking is required to check your passwords against Have I Been Pwned databases.</source>
+        <translation>此版本 奈娜子密码本 不包含网络功能。如要通过 Have I Been Pwned 服务检查您的密码，就必须可以访问网络。</translation>
     </message>
     <message>
         <source>Congratulations, no exposed passwords!</source>
@@ -10618,8 +10698,8 @@ Example: JBSWY3DPEHPK3PXP</source>
         <translation>&lt;strong&gt;有新版本可用。&lt;/strong&gt;&lt;br/&gt;您可以&lt;a href=&quot;https://keepassxc.org/download/&quot;&gt;在此下载&lt;/a&gt; KeePassXC %1.</translation>
     </message>
     <message>
-        <source>You have the latest version of KeePassXC</source>
-        <translation>您的 KeePassXC 已经是最版本</translation>
+        <source>You have the latest version of 奈娜子密码本</source>
+        <translation>您的 奈娜子密码本 已经是最版本</translation>
     </message>
 </context>
 <context>

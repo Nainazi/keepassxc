@@ -2523,7 +2523,7 @@ bool DatabaseWidget::save()
         // Saving failed 3 times, issue a warning and attempt to resolve
         auto result = MessageBox::question(this,
                                            tr("Disable safe saves?"),
-                                           tr("KeePassXC has failed to save the database multiple times. "
+                                           tr("奈娜子密码本 has failed to save the database multiple times. "
                                               "This is likely caused by file sync services holding a lock on "
                                               "the save file.\nDisable safe saves and try again?"),
                                            MessageBox::Disable | MessageBox::Cancel,

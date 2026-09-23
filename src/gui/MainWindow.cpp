@@ -621,7 +621,7 @@ MainWindow::MainWindow()
     });
 
     if (config()->get(Config::Messages_HidePreReleaseWarning) != KEEPASSXC_VERSION) {
-        m_ui->globalMessageWidget->showMessage(tr("WARNING: You are using a development snapshot build of KeePassXC.\n"
+        m_ui->globalMessageWidget->showMessage(tr("WARNING: You are using a development snapshot build of 奈娜子密码本.\n"
                                                   "Maintain a backup of your databases in the event of unknown bugs.\n"
                                                   "This version is not meant for production use."),
                                                MessageWidget::Warning,
@@ -1081,7 +1081,7 @@ void MainWindow::performUpdateCheck()
         auto result =
             MessageBox::question(this,
                                  tr("Check for updates on startup?"),
-                                 tr("Would you like KeePassXC to check for updates on startup?") + "\n\n"
+                                 tr("Would you like 奈娜子密码本 to check for updates on startup?") + "\n\n"
                                      + tr("You can always check for updates manually from the application menu."),
                                  MessageBox::Yes | MessageBox::No,
                                  MessageBox::No);
@@ -1532,12 +1532,27 @@ void MainWindow::updateTrayIcon()
 
             auto* actionToggle = new QAction(tr("Toggle window"), menu);
             menu->addAction(actionToggle);
-            actionToggle->setIcon(icons()->icon("keepassxc-monochrome-dark"));
+            actionToggle->setIcon(icons()->applicationIcon());
+
+            auto* recentMenu = new QMenu(tr("&Recent Databases"), menu);
+            recentMenu->setIcon(icons()->icon("document-open-recent"));
+            connect(recentMenu, &QMenu::aboutToShow, this, [this, recentMenu] {
+                recentMenu->clear();
+                const QStringList lastDatabases = config()->get(Config::LastDatabases).toStringList();
+                for (const QString& database : lastDatabases) {
+                    QAction* action = recentMenu->addAction(Tools::escapeAccelerators(database));
+                    action->setData(database);
+                    connect(action, &QAction::triggered, this, [this, action] { openRecentDatabase(action); });
+                }
+                recentMenu->addSeparator();
+                recentMenu->addAction(m_clearHistoryAction);
+            });
+            menu->addMenu(recentMenu);
 
             menu->addAction(m_ui->actionLockAllDatabases);
 
 #ifdef Q_OS_MACOS
-            auto actionQuit = new QAction(QStringLiteral("退出奈娜子密码本"), menu);
+            auto actionQuit = new QAction(tr("Quit 奈娜子密码本"), menu);
             connect(actionQuit, SIGNAL(triggered()), SLOT(appExit()));
             menu->addAction(actionQuit);
 #else
