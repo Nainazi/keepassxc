@@ -21,18 +21,20 @@
 #include "config-keepassx.h"
 
 #include <QApplication>
-#include <QLabel>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QDesktopServices>
 #include <QHostInfo>
 #include <QInputDialog>
 #include <QKeyEvent>
+#include <QLabel>
 #include <QPlainTextEdit>
 #include <QProcess>
+#include <QPushButton>
 #include <QSplitter>
 #include <QTextDocumentFragment>
 #include <QTextEdit>
+#include <algorithm>
 
 #include "autotype/AutoType.h"
 #include "core/AsyncTask.h"
@@ -56,6 +58,13 @@
 #include "gui/entry/EntryView.h"
 #include "gui/group/EditGroupWidget.h"
 #include "gui/group/GroupView.h"
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+#include "gui/SearchWidget.h"
+#include "gui/nainazi/NotebookCommon.h"
+#include "gui/nainazi/NotebookDetail.h"
+#include "gui/nainazi/NotebookListHeader.h"
+#include "gui/nainazi/NotebookSidebar.h"
+#endif
 #include "gui/reports/ReportsDialog.h"
 #include "gui/tag/TagView.h"
 #include "gui/widgets/ElidedLabel.h"
@@ -206,11 +215,15 @@ DatabaseWidget::DatabaseWidget(QSharedPointer<Database> db, QWidget* parent)
 
     m_previewView->setObjectName("previewWidget");
     m_previewView->hide();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    setupNotebookChrome();
+#else
     m_previewSplitter->addWidget(m_entryView);
     m_previewSplitter->addWidget(m_previewView);
     m_previewSplitter->setStretchFactor(0, 100);
     m_previewSplitter->setStretchFactor(1, 0);
     m_previewSplitter->setSizes({1, 1});
+#endif
 
     m_editEntryWidget->setObjectName("editEntryWidget");
     m_historyEditEntryWidget->setObjectName("editEntryHistoryWidget");
@@ -282,6 +295,13 @@ DatabaseWidget::DatabaseWidget(const QString& filePath, QWidget* parent)
 
 DatabaseWidget::~DatabaseWidget()
 {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Search lives in the list header. Pull it out before this widget deletes its children.
+    if (auto* search = findChild<SearchWidget*>(QStringLiteral("SearchWidget"))) {
+        search->setParent(hostWindow());
+        search->hide();
+    }
+#endif
     // Trigger any Database deletion related signals manually by
     // explicitly clearing the Database pointer, instead of leaving it to ~QSharedPointer.
     // QSharedPointer may behave differently depending on whether it is cleared by the `clear` method
@@ -420,7 +440,7 @@ void DatabaseWidget::setSplitterSizes(const QHash<Config::ConfigKey, QList<int>>
         case Config::GUI_SplitterState:
             if (value.size() < 2) {
 #ifdef KPXC_FEATURE_NAINAZI_CORE_UI
-                const int groupWidth = 200;
+                const int groupWidth = 240;
                 value = QList({groupWidth, qMax(1, width() - groupWidth)});
 #else
                 value = QList({static_cast<int>(width() * 0.25), static_cast<int>(width() * 0.75)});
@@ -429,9 +449,17 @@ void DatabaseWidget::setSplitterSizes(const QHash<Config::ConfigKey, QList<int>>
             m_mainSplitter->setSizes(value);
             break;
         case Config::GUI_PreviewSplitterState:
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+            // Old saves stored a short vertical preview. The notebook detail pane needs a real width.
+            if (value.size() < 2 || value.last() < 280) {
+                const int detailWidth = 340;
+                value = QList({qMax(1, width() - detailWidth), detailWidth});
+            }
+#else
             if (value.size() < 2) {
                 value = QList({static_cast<int>(height() * 0.8), static_cast<int>(height() * 0.2)});
             }
+#endif
             m_previewSplitter->setSizes(value);
             break;
         case Config::GUI_GroupSplitterState:
@@ -453,8 +481,15 @@ void DatabaseWidget::setSplitterSizes(const QHash<Config::ConfigKey, QList<int>>
 void DatabaseWidget::onConfigChanged(Config::ConfigKey key)
 {
     if (key == Config::GUI_HideGroupPanel) {
-        // Toggle the group splitter visibility and reset the size
-        m_groupSplitter->setVisible(!config()->get(Config::GUI_HideGroupPanel).toBool());
+        const bool showGroups = !config()->get(Config::GUI_HideGroupPanel).toBool();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+        // The group tree lives in the sidebar. The old splitter is detached and must stay hidden.
+        if (m_notebookSidebar) {
+            m_notebookSidebar->setVisible(showGroups);
+        }
+#else
+        m_groupSplitter->setVisible(showGroups);
+#endif
         setSplitterSizes({{Config::GUI_SplitterState, QList<int>({})}});
     }
 }
@@ -1800,9 +1835,17 @@ void DatabaseWidget::search(const QString& searchtext)
         m_searchingLabel->setText(m_nextSearchLabelText);
         m_nextSearchLabelText.clear();
     } else if (!results.isEmpty()) {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+        m_searchingLabel->setText(tr("%n matching entries", nullptr, results.size()));
+#else
         m_searchingLabel->setText(tr("Search Results (%1)").arg(results.size()));
+#endif
     } else {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+        m_searchingLabel->setText(tr("Nothing matches"));
+#else
         m_searchingLabel->setText(tr("No Results"));
+#endif
     }
 
     emit searchModeAboutToActivate();
@@ -1813,6 +1856,9 @@ void DatabaseWidget::search(const QString& searchtext)
     m_searchingLabel->setVisible(true);
     m_shareLabel->setVisible(false);
     updateEmptyNotebookLabel();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    updateNotebookHeading();
+#endif
 
     emit searchModeActivated();
 }
@@ -1865,6 +1911,16 @@ void DatabaseWidget::setSearchLimitGroup(bool state)
 
 void DatabaseWidget::onGroupChanged()
 {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (m_applyingSmartView) {
+        emit groupChanged();
+        return;
+    }
+    m_smartView = NotebookView::Folder;
+    if (m_notebookSidebar) {
+        m_notebookSidebar->setSmartActive(false);
+    }
+#endif
     auto group = m_groupView->currentGroup();
 
     // Intercept group changes if in search mode
@@ -1890,6 +1946,9 @@ void DatabaseWidget::onGroupChanged()
 #endif
 
     updateEmptyNotebookLabel();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    updateNotebookHeading();
+#endif
     emit groupChanged();
 }
 
@@ -1899,6 +1958,25 @@ void DatabaseWidget::updateEmptyNotebookLabel()
     if (!m_emptyNotebookLabel || !m_entryView || !m_entryView->model()) {
         return;
     }
+    switch (m_smartView) {
+    case NotebookView::All:
+        m_emptyNotebookLabel->setText(tr("No entries yet. Use New entry to write a login in this passbook."));
+        break;
+    case NotebookView::Frequent:
+        m_emptyNotebookLabel->setText(
+            tr("No frequently used entries yet. Open one a few times and it will show up here."));
+        break;
+    case NotebookView::Recent:
+        m_emptyNotebookLabel->setText(tr("Nothing recent yet."));
+        break;
+    case NotebookView::Favorite:
+        m_emptyNotebookLabel->setText(tr("No favorites yet. Star an entry to keep it here."));
+        break;
+    case NotebookView::Folder:
+    default:
+        m_emptyNotebookLabel->setText(tr("This group is empty. Choose New Entry to write a login down."));
+        break;
+    }
     const bool show = !isSearchActive() && currentMode() == Mode::ViewMode && m_entryView->model()->rowCount() == 0;
     m_emptyNotebookLabel->setVisible(show);
 #else
@@ -1906,8 +1984,323 @@ void DatabaseWidget::updateEmptyNotebookLabel()
 #endif
 }
 
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+QWidget* DatabaseWidget::hostWindow() const
+{
+    QWidget* top = window();
+    if (top && top != this) {
+        return top;
+    }
+    top = parentWidget();
+    while (top && top->parentWidget()) {
+        top = top->parentWidget();
+    }
+    return top;
+}
+
+void DatabaseWidget::triggerNamedAction(const char* name)
+{
+    QWidget* top = hostWindow();
+    if (!top) {
+        return;
+    }
+    if (auto* action = top->findChild<QAction*>(QLatin1String(name))) {
+        action->trigger();
+    }
+}
+
+void DatabaseWidget::adoptNotebookSearch(SearchWidget* search)
+{
+    if (m_listHeader && search) {
+        m_listHeader->adoptSearch(search);
+    }
+}
+
+void DatabaseWidget::setupNotebookChrome()
+{
+    m_entryView->setNotebookMode(true);
+
+    m_notebookSidebar = new NotebookSidebar(m_groupView, m_mainSplitter);
+    m_notebookSidebar->refresh(m_db);
+    connect(m_notebookSidebar, &NotebookSidebar::smartViewSelected, this, &DatabaseWidget::onNotebookSmartView);
+
+    m_listHeader = new NotebookListHeader(this);
+    connect(
+        m_listHeader, &NotebookListHeader::newEntryRequested, this, [this] { triggerNamedAction("actionEntryNew"); });
+    connect(m_listHeader, &NotebookListHeader::importRequested, this, [this] { triggerNamedAction("actionImport"); });
+    connect(m_listHeader, &NotebookListHeader::exportRequested, this, [this] {
+        triggerNamedAction("actionDatabaseSaveAs");
+    });
+    connect(
+        m_listHeader, &NotebookListHeader::newGroupRequested, this, [this] { triggerNamedAction("actionGroupNew"); });
+    connect(
+        m_listHeader, &NotebookListHeader::lockRequested, this, [this] { triggerNamedAction("actionLockDatabase"); });
+    connect(m_listHeader, &NotebookListHeader::generatorRequested, this, [this] {
+        triggerNamedAction("actionPasswordGenerator");
+    });
+    connect(
+        m_listHeader, &NotebookListHeader::settingsRequested, this, [this] { triggerNamedAction("actionSettings"); });
+    connect(m_listHeader, &NotebookListHeader::databaseSettingsRequested, this, [this] {
+        triggerNamedAction("actionDatabaseSettings");
+    });
+    connect(m_listHeader, &NotebookListHeader::sortChanged, this, [this] {
+        if (m_smartView == NotebookView::Recent || m_smartView == NotebookView::Frequent) {
+            // The user asked for a column sort, so stop holding the smart-list order.
+            m_entryView->setSortingEnabled(true);
+        }
+        applyNotebookSort();
+    });
+
+    if (QWidget* top = hostWindow()) {
+        if (auto* createAction = top->findChild<QAction*>(QStringLiteral("actionEntryNew"))) {
+            if (auto* button = m_listHeader->findChild<QPushButton*>(QStringLiteral("notebookNewEntry"))) {
+                button->setEnabled(createAction->isEnabled());
+                connect(createAction, &QAction::changed, button, [button, createAction] {
+                    button->setEnabled(createAction->isEnabled());
+                });
+            }
+        }
+        if (auto* search = top->findChild<SearchWidget*>(QStringLiteral("SearchWidget"))) {
+            adoptNotebookSearch(search);
+        }
+    }
+
+    m_notebookDetail = new NotebookDetail(this);
+    connect(m_notebookDetail, &NotebookDetail::editRequested, this, [this] { triggerNamedAction("actionEntryEdit"); });
+    connect(
+        m_notebookDetail, &NotebookDetail::deleteRequested, this, [this] { triggerNamedAction("actionEntryDelete"); });
+    connect(m_notebookDetail, &NotebookDetail::copyRequested, this, &DatabaseWidget::setClipboardTextAndMinimize);
+    connect(m_notebookDetail, &NotebookDetail::favoriteToggled, this, &DatabaseWidget::toggleNotebookFavorite);
+    connect(m_notebookDetail, &NotebookDetail::autoTypeRequested, this, [this] { performAutoType(); });
+    connect(m_notebookDetail, &NotebookDetail::openUrlRequested, this, &DatabaseWidget::openUrl);
+    connect(m_notebookDetail, &NotebookDetail::cloneRequested, this, &DatabaseWidget::cloneEntry);
+    connect(m_entryView, &EntryView::toggleFavoriteRequested, this, &DatabaseWidget::toggleNotebookFavorite);
+
+    auto* center = new QWidget(m_previewSplitter);
+    center->setObjectName(QStringLiteral("notebookCenter"));
+    auto* centerLayout = new QVBoxLayout(center);
+    centerLayout->setContentsMargins(8, 0, 8, 0);
+    centerLayout->setSpacing(8);
+    centerLayout->addWidget(m_listHeader);
+    centerLayout->addWidget(m_searchingLabel);
+    centerLayout->addWidget(m_shareLabel);
+    if (m_emptyNotebookLabel) {
+        centerLayout->addWidget(m_emptyNotebookLabel);
+    }
+    centerLayout->addWidget(m_entryView, 1);
+
+    auto* detailColumn = new QWidget(m_previewSplitter);
+    detailColumn->setObjectName(QStringLiteral("notebookDetailColumn"));
+    detailColumn->setMinimumWidth(300);
+    auto* detailLayout = new QVBoxLayout(detailColumn);
+    detailLayout->setContentsMargins(0, 0, 0, 0);
+    detailLayout->setSpacing(0);
+    detailLayout->addWidget(m_notebookDetail, 1);
+    detailLayout->addWidget(m_previewView, 0);
+
+    // Drop the old group/tags splitter out of the layout. The group tree now lives in the sidebar.
+    m_groupSplitter->hide();
+    m_groupSplitter->setParent(this);
+    m_mainSplitter->insertWidget(0, m_notebookSidebar);
+    m_mainSplitter->setStretchFactor(0, 0);
+    m_mainSplitter->setStretchFactor(1, 1);
+
+    m_previewSplitter->setOrientation(Qt::Horizontal);
+    m_previewSplitter->setChildrenCollapsible(false);
+    m_previewSplitter->addWidget(center);
+    m_previewSplitter->addWidget(detailColumn);
+    m_previewSplitter->setStretchFactor(0, 1);
+    m_previewSplitter->setStretchFactor(1, 0);
+
+    syncNotebookDetail(m_entryView->currentEntry());
+    updateNotebookHeading();
+    if (config()->get(Config::GUI_HideGroupPanel).toBool()) {
+        m_notebookSidebar->setVisible(false);
+    }
+}
+
+void DatabaseWidget::onNotebookSmartView(int view)
+{
+    m_smartView = static_cast<NotebookView>(view);
+    m_applyingSmartView = true;
+    if (m_db && m_db->rootGroup() && currentGroup() != m_db->rootGroup()) {
+        m_groupView->setCurrentGroup(m_db->rootGroup());
+    }
+    m_applyingSmartView = false;
+    if (m_notebookSidebar) {
+        m_notebookSidebar->setSmartActive(true);
+    }
+
+    if (isSearchActive()) {
+        endSearch();
+        return;
+    }
+
+    emit listModeAboutToActivate();
+    populateNotebookSmartView();
+    emit listModeActivated();
+}
+
+void DatabaseWidget::populateNotebookSmartView()
+{
+    if (!m_db || !m_db->rootGroup() || !m_entryView) {
+        return;
+    }
+
+    QList<Entry*> entries;
+    const QList<Entry*> all = m_db->rootGroup()->entriesRecursive(false);
+    for (Entry* entry : all) {
+        if (!entry || entry->isRecycled()) {
+            continue;
+        }
+        switch (m_smartView) {
+        case NotebookView::All:
+            entries.append(entry);
+            break;
+        case NotebookView::Frequent:
+            if (entry->timeInfo().usageCount() > 0) {
+                entries.append(entry);
+            }
+            break;
+        case NotebookView::Recent:
+            entries.append(entry);
+            break;
+        case NotebookView::Favorite:
+            if (notebookEntryIsFavorite(entry)) {
+                entries.append(entry);
+            }
+            break;
+        case NotebookView::Folder:
+            break;
+        }
+    }
+
+    const bool keepOrder = m_smartView == NotebookView::Recent || m_smartView == NotebookView::Frequent;
+    if (m_smartView == NotebookView::Recent) {
+        std::sort(entries.begin(), entries.end(), [](const Entry* a, const Entry* b) {
+            return a->timeInfo().lastAccessTime() > b->timeInfo().lastAccessTime();
+        });
+        if (entries.size() > 40) {
+            entries = entries.mid(0, 40);
+        }
+    } else if (m_smartView == NotebookView::Frequent) {
+        std::sort(entries.begin(), entries.end(), [](const Entry* a, const Entry* b) {
+            if (a->timeInfo().usageCount() != b->timeInfo().usageCount()) {
+                return a->timeInfo().usageCount() > b->timeInfo().usageCount();
+            }
+            return a->timeInfo().lastAccessTime() > b->timeInfo().lastAccessTime();
+        });
+    }
+
+    m_entryView->displayNotebook(entries, keepOrder);
+    if (!keepOrder) {
+        applyNotebookSort();
+    }
+    updateNotebookHeading();
+    updateEmptyNotebookLabel();
+    if (m_notebookSidebar) {
+        m_notebookSidebar->refresh(m_db);
+    }
+}
+
+void DatabaseWidget::updateNotebookHeading()
+{
+    if (!m_listHeader || !m_entryView || !m_entryView->model()) {
+        return;
+    }
+
+    QString title;
+    if (isSearchActive()) {
+        title = tr("Search");
+        m_listHeader->setSummary(title, m_entryView->model()->rowCount());
+        return;
+    }
+    switch (m_smartView) {
+    case NotebookView::All:
+        title = tr("All entries");
+        break;
+    case NotebookView::Frequent:
+        title = tr("Frequently used");
+        break;
+    case NotebookView::Recent:
+        title = tr("Recent");
+        break;
+    case NotebookView::Favorite:
+        title = tr("Favorites");
+        break;
+    case NotebookView::Folder:
+    default:
+        title = currentGroup() ? currentGroup()->name() : tr("Entries");
+        break;
+    }
+    m_listHeader->setSummary(title, m_entryView->model()->rowCount());
+}
+
+void DatabaseWidget::applyNotebookSort()
+{
+    if (!m_entryView || !m_listHeader) {
+        return;
+    }
+    m_entryView->setSortingEnabled(true);
+    m_entryView->sortByColumn(m_listHeader->sortColumn(), m_listHeader->sortOrder());
+}
+
+void DatabaseWidget::toggleNotebookFavorite(Entry* entry)
+{
+    if (!entry) {
+        return;
+    }
+
+    if (notebookEntryIsFavorite(entry)) {
+        entry->removeTag(notebookFavoriteTag());
+        entry->removeTag(QStringLiteral("Favorite"));
+        entry->removeTag(QStringLiteral("收藏"));
+    } else {
+        entry->addTag(notebookFavoriteTag());
+    }
+
+    m_entryView->setCurrentEntry(entry);
+    m_entryView->viewport()->update();
+    if (m_notebookDetail) {
+        m_notebookDetail->refresh();
+    }
+    if (!isSearchActive() && (m_smartView == NotebookView::Favorite || m_smartView == NotebookView::Frequent)) {
+        populateNotebookSmartView();
+        m_entryView->setCurrentEntry(entry);
+    }
+}
+
+void DatabaseWidget::syncNotebookDetail(Entry* entry)
+{
+    if (!m_notebookDetail || !m_previewView) {
+        return;
+    }
+    if (entry) {
+        m_notebookDetail->setEntry(entry);
+        m_notebookDetail->setVisible(true);
+        // Keep the classic preview alive (tests read it) without giving it space.
+        m_previewView->setMaximumHeight(0);
+        m_previewView->show();
+    } else {
+        m_notebookDetail->setEntry(nullptr);
+        m_notebookDetail->setVisible(false);
+        m_previewView->setMaximumHeight(QWIDGETSIZE_MAX);
+        m_previewView->setVisible(!config()->get(Config::GUI_HidePreviewPanel).toBool());
+    }
+}
+#endif
+
 void DatabaseWidget::onDatabaseModified()
 {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (m_notebookSidebar) {
+        m_notebookSidebar->refresh(m_db);
+    }
+    updateNotebookHeading();
+    if (m_notebookDetail) {
+        m_notebookDetail->refresh();
+    }
+#endif
     updateEmptyNotebookLabel();
     refreshSearch();
     m_remoteSettings->loadSettings();
@@ -1966,11 +2359,22 @@ void DatabaseWidget::endSearch()
     if (isSearchActive()) {
         // Show the normal entry view of the current group
         emit listModeAboutToActivate();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+        if (m_smartView != NotebookView::Folder) {
+            populateNotebookSmartView();
+        } else {
+            m_entryView->displayGroup(currentGroup());
+        }
+#else
         m_entryView->displayGroup(currentGroup());
+#endif
         emit listModeActivated();
         m_entryView->setFirstEntryActive();
         // Enforce preview view update (prevents stale information if focus group is empty)
         m_previewView->setEntry(currentSelectedEntry());
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+        syncNotebookDetail(currentSelectedEntry());
+#endif
         // Reset selection on tag view
         m_tagView->selectionModel()->clearSelection();
     }
@@ -1984,6 +2388,9 @@ void DatabaseWidget::endSearch()
     // Tell the search widget to clear
     emit clearSearch();
     updateEmptyNotebookLabel();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    updateNotebookHeading();
+#endif
 }
 
 void DatabaseWidget::emitGroupContextMenuRequested(const QPoint& pos)
@@ -2003,6 +2410,9 @@ void DatabaseWidget::onEntryChanged(Entry* entry)
     } else {
         m_previewView->setGroup(groupView()->currentGroup());
     }
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    syncNotebookDetail(entry);
+#endif
 
     emit entrySelectionChanged();
 }
@@ -2047,6 +2457,12 @@ bool DatabaseWidget::focusNextPrevChild(bool next)
 {
     // [parent] <-> GroupView <-> TagView <-> EntryView <-> EntryPreview <-> [parent]
     QList<QWidget*> sequence = {m_groupView, m_tagView, m_entryView, m_previewView};
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Search now sits in the list header, ahead of the group tree and the cards.
+    if (auto* search = findChild<SearchWidget*>(QStringLiteral("SearchWidget"))) {
+        sequence.prepend(search);
+    }
+#endif
     auto widget = qApp->focusWidget();
     if (!widget) {
         return QStackedWidget::focusNextPrevChild(next);

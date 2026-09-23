@@ -802,7 +802,7 @@ void TestGui::testSearchEditEntry()
     m_dbWidget->groupView()->setCurrentGroup(badGroup);
 
     // Search for "Doggy" entry
-    auto* searchWidget = toolBar->findChild<SearchWidget*>("SearchWidget");
+    auto* searchWidget = m_mainWindow->findChild<SearchWidget*>("SearchWidget");
     auto* searchTextEdit = searchWidget->findChild<QLineEdit*>("searchEdit");
     QTest::mouseClick(searchTextEdit, Qt::LeftButton);
     QTest::keyClicks(searchTextEdit, "Doggy");
@@ -1158,7 +1158,7 @@ void TestGui::testSearch()
 
     auto* toolBar = m_mainWindow->findChild<QToolBar*>("toolBar");
 
-    auto* searchWidget = toolBar->findChild<SearchWidget*>("SearchWidget");
+    auto* searchWidget = m_mainWindow->findChild<SearchWidget*>("SearchWidget");
     QVERIFY(searchWidget->isEnabled());
     auto* searchTextEdit = searchWidget->findChild<QLineEdit*>("searchEdit");
     auto* waitForEnterAction = searchWidget->findChild<QAction*>("actionSearchWaitForEnter");

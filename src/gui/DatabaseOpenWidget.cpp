@@ -251,7 +251,7 @@ void DatabaseOpenWidget::load(const QString& filename)
     m_ui->fileNameLabel->setRawText(m_filename);
 
     // Set the public name if defined
-    auto label = QStringLiteral("解锁奈娜子密码本数据库");
+    auto label = tr("Unlock 奈娜子密码本");
     if (!m_db->publicName().isEmpty()) {
         label.append(QString(": %1").arg(m_db->publicName()));
     }

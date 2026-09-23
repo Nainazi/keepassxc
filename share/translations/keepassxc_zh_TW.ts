@@ -10959,4 +10959,317 @@ Example: JBSWY3DPEHPK3PXP</source>
         <translation>未知</translation>
     </message>
 </context>
+<context>
+    <name>DatabaseOpenWidget</name>
+    <message>
+        <source>Unlock 奈娜子密码本</source>
+        <translation>解鎖奈娜子密碼本</translation>
+    </message>
+</context>
+<context>
+    <name>DatabaseWidget</name>
+    <message>
+        <source>No entries yet. Use New entry to write a login in this passbook.</source>
+        <translation>還沒有條目。用「新增條目」在這本密碼本裡記下一個帳號。</translation>
+    </message>
+    <message>
+        <source>No frequently used entries yet. Open one a few times and it will show up here.</source>
+        <translation>還沒有常用條目。多打開幾次，它就會出現在這裡。</translation>
+    </message>
+    <message>
+        <source>Nothing recent yet.</source>
+        <translation>最近還沒有使用紀錄。</translation>
+    </message>
+    <message>
+        <source>No favorites yet. Star an entry to keep it here.</source>
+        <translation>還沒有收藏。給條目加一顆星，它就會留在這裡。</translation>
+    </message>
+    <message>
+        <source>Nothing matches</source>
+        <translation>沒有相符的條目</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n matching entries</source>
+        <translation>
+            <numerusform>%n 筆相符</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>搜尋</translation>
+    </message>
+    <message>
+        <source>All entries</source>
+        <translation>全部條目</translation>
+    </message>
+    <message>
+        <source>Frequently used</source>
+        <translation>常用</translation>
+    </message>
+    <message>
+        <source>Recent</source>
+        <translation>最近使用</translation>
+    </message>
+    <message>
+        <source>Favorites</source>
+        <translation>收藏</translation>
+    </message>
+    <message>
+        <source>Entries</source>
+        <translation>条目</translation>
+    </message>
+</context>
+<context>
+    <name>EntryCardDelegate</name>
+    <message>
+        <source>Untitled</source>
+        <translation>未命名</translation>
+    </message>
+</context>
+<context>
+    <name>NotebookDetail</name>
+    <message>
+        <source>Show or hide</source>
+        <translation>顯示或隱藏</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>複製</translation>
+    </message>
+    <message>
+        <source>Select an entry to see the username, password, and notes here.</source>
+        <translation>選取一筆紀錄，使用者名稱、密碼和備註會顯示在這裡。</translation>
+    </message>
+    <message>
+        <source>Favorite</source>
+        <translation>收藏</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>編輯</translation>
+    </message>
+    <message>
+        <source>More</source>
+        <translation>更多</translation>
+    </message>
+    <message>
+        <source>Auto-Type</source>
+        <translation>自動輸入</translation>
+    </message>
+    <message>
+        <source>Open URL</source>
+        <translation>開啟網址</translation>
+    </message>
+    <message>
+        <source>Clone</source>
+        <translation>再製</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>刪除</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation>使用者名稱</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>密碼</translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation>網址</translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation>備註</translation>
+    </message>
+    <message>
+        <source>Modified</source>
+        <translation>修改時間</translation>
+    </message>
+    <message>
+        <source>TOTP</source>
+        <translation>驗證碼</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation>空</translation>
+    </message>
+    <message>
+        <source>Untitled</source>
+        <translation>未命名</translation>
+    </message>
+    <message>
+        <source>Poor</source>
+        <comment>Password quality</comment>
+        <translation>弱</translation>
+    </message>
+    <message>
+        <source>Weak</source>
+        <comment>Password quality</comment>
+        <translation>普通</translation>
+    </message>
+    <message>
+        <source>Good</source>
+        <comment>Password quality</comment>
+        <translation>良好</translation>
+    </message>
+    <message>
+        <source>Excellent</source>
+        <comment>Password quality</comment>
+        <translation>很強</translation>
+    </message>
+    <message>
+        <source>Password strength: %1</source>
+        <translation>密碼強度：%1</translation>
+    </message>
+    <message>
+        <source>Stored only in this encrypted passbook.</source>
+        <translation>只保存在這本已加密的密碼本裡。</translation>
+    </message>
+</context>
+<context>
+    <name>NotebookListHeader</name>
+    <message>
+        <source>New entry</source>
+        <translation>新增條目</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>匯入</translation>
+    </message>
+    <message>
+        <source>Import entries from another password file</source>
+        <translation>從另一個密碼檔匯入條目</translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation>匯出</translation>
+    </message>
+    <message>
+        <source>Save a copy of this passbook as a KDBX file</source>
+        <translation>把這本密碼本另存成一份 KDBX 檔案</translation>
+    </message>
+    <message>
+        <source>More</source>
+        <translation>更多</translation>
+    </message>
+    <message>
+        <source>New folder</source>
+        <translation>新增資料夾</translation>
+    </message>
+    <message>
+        <source>Lock passbook</source>
+        <translation>鎖定密碼本</translation>
+    </message>
+    <message>
+        <source>Password generator</source>
+        <translation>密碼產生器</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>設定</translation>
+    </message>
+    <message>
+        <source>Passbook settings</source>
+        <translation>密碼本設定</translation>
+    </message>
+    <message>
+        <source>Recently changed</source>
+        <translation>最近修改</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>標題</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation>使用者名稱</translation>
+    </message>
+    <message>
+        <source>Sort</source>
+        <translation>排序</translation>
+    </message>
+    <message>
+        <source>%1 (%2)</source>
+        <comment>List heading and entry count</comment>
+        <translation>%1（%2）</translation>
+    </message>
+</context>
+<context>
+    <name>NotebookSidebar</name>
+    <message>
+        <source>All</source>
+        <translation>全部</translation>
+    </message>
+    <message>
+        <source>Frequently used</source>
+        <translation>常用</translation>
+    </message>
+    <message>
+        <source>Recent</source>
+        <translation>最近使用</translation>
+    </message>
+    <message>
+        <source>Favorites</source>
+        <translation>收藏</translation>
+    </message>
+    <message>
+        <source>Folders</source>
+        <translation>資料夾</translation>
+    </message>
+    <message>
+        <source>This passbook is encrypted.
+Entries stay in a local KDBX file on this computer.</source>
+        <translation>這本密碼本已加密。
+條目保存在這台電腦上的本機 KDBX 檔案裡。</translation>
+    </message>
+    <message>
+        <source>奈娜子密码本</source>
+        <translation>奈娜子密碼本</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n entries · encrypted</source>
+        <translation>
+            <numerusform>%n 筆紀錄 · 已加密</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Just now</source>
+        <translation>剛剛</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n min ago</source>
+        <translation>
+            <numerusform>%n 分鐘前</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n h ago</source>
+        <translation>
+            <numerusform>%n 小時前</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Yesterday</source>
+        <translation>昨天</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n days ago</source>
+        <translation>
+            <numerusform>%n 天前</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>SearchWidget</name>
+    <message>
+        <source>Search entries…</source>
+        <translation>搜尋條目…</translation>
+    </message>
+</context>
 </TS>
