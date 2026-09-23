@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QCloseEvent>
 #include <QCursor>
+#include <QLabel>
 #include <QMenu>
 #include <QScreen>
 #include <QShortcut>
@@ -58,6 +59,13 @@ AutoTypeSelectDialog::AutoTypeSelectDialog(QWidget* parent)
     buildActionMenu();
 
     m_ui->setupUi(this);
+
+    m_noticeLabel = new QLabel(this);
+    m_noticeLabel->setWordWrap(true);
+    m_noticeLabel->setVisible(false);
+    m_noticeLabel->setStyleSheet(QStringLiteral(
+        "QLabel { background: #FDE8F1; color: #6A3050; border-radius: 8px; padding: 8px; }"));
+    m_ui->verticalLayout->insertWidget(1, m_noticeLabel);
 
     connect(m_ui->view, &AutoTypeMatchView::matchActivated, this, &AutoTypeSelectDialog::submitAutoTypeMatch);
     connect(m_ui->view, &AutoTypeMatchView::currentMatchChanged, this, &AutoTypeSelectDialog::updateActionMenu);
@@ -119,6 +127,32 @@ void AutoTypeSelectDialog::setMatches(const QList<AutoTypeMatch>& matches,
     // always perform search when updating matches to refresh view
     performSearch();
     setDelayedSearch(noMatches);
+    updateNotice();
+}
+
+void AutoTypeSelectDialog::setTargetWindowTitle(const QString& title)
+{
+    m_targetWindowTitle = title;
+}
+
+void AutoTypeSelectDialog::updateNotice()
+{
+    if (!m_noticeLabel) {
+        return;
+    }
+
+    QString text;
+    if (m_matches.isEmpty()) {
+        if (m_targetWindowTitle.isEmpty()) {
+            text = tr("The target window has no title, so 奈娜子密码本 cannot match an entry. Search below, or cancel.");
+        } else {
+            text = tr("No entry matches the window “%1”. Search open databases below, or cancel.")
+                       .arg(m_targetWindowTitle);
+        }
+    }
+
+    m_noticeLabel->setText(text);
+    m_noticeLabel->setVisible(!text.isEmpty());
 }
 
 void AutoTypeSelectDialog::setSearchString(const QString& search)

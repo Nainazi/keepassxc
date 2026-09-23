@@ -3,6 +3,10 @@
     <qresource prefix="/icons">
         <file>application/index.theme</file>
 
+        <file>application/16x16/apps/keepassxc.png</file>
+        <file>application/32x32/apps/keepassxc.png</file>
+        <file>application/48x48/apps/keepassxc.png</file>
+        <file>application/128x128/apps/keepassxc.png</file>
         <file>application/256x256/apps/keepassxc.png</file>
 
         <file>application/scalable/actions/application-exit.svg</file>

@@ -27,6 +27,7 @@
 #include <functional>
 
 #include <QColorDialog>
+#include <QComboBox>
 #include <QDesktopServices>
 #include <QLineEdit>
 #include <QSortFilterProxyModel>
@@ -343,6 +344,43 @@ void EditEntryWidget::setupAutoType()
     addPage(tr("Auto-Type"), icons()->icon("auto-type"), m_autoTypeWidget);
 
     m_autoTypeUi->openHelpButton->setIcon(icons()->icon("system-help"));
+
+    m_autoTypeSequenceTemplate = new QComboBox(m_autoTypeWidget);
+    m_autoTypeSequenceTemplate->setAccessibleName(tr("Auto-Type sequence template"));
+    m_autoTypeSequenceTemplate->setToolTip(
+        tr("Insert a preset login sequence. The field stays editable afterwards."));
+    m_autoTypeSequenceTemplate->addItem(tr("Insert sequence template…"));
+    for (const auto& preset : AutoType::sequenceTemplates()) {
+        m_autoTypeSequenceTemplate->addItem(preset.label, preset.sequence);
+    }
+    m_autoTypeUi->verticalLayout_2->insertWidget(4, m_autoTypeSequenceTemplate);
+    connect(m_autoTypeSequenceTemplate, QOverload<int>::of(&QComboBox::activated), this, [this](int index) {
+        const auto sequence = m_autoTypeSequenceTemplate->itemData(index).toString();
+        if (sequence.isEmpty()) {
+            return;
+        }
+        m_autoTypeUi->customSequenceButton->setChecked(true);
+        m_autoTypeUi->sequenceEdit->setText(sequence);
+        m_autoTypeSequenceTemplate->setCurrentIndex(0);
+    });
+
+    m_windowSequenceTemplate = new QComboBox(m_autoTypeWidget);
+    m_windowSequenceTemplate->setAccessibleName(tr("Window Auto-Type sequence template"));
+    m_windowSequenceTemplate->setToolTip(tr("Insert a preset sequence for this window association."));
+    m_windowSequenceTemplate->addItem(tr("Insert sequence template…"));
+    for (const auto& preset : AutoType::sequenceTemplates()) {
+        m_windowSequenceTemplate->addItem(preset.label, preset.sequence);
+    }
+    m_autoTypeUi->verticalLayout->insertWidget(4, m_windowSequenceTemplate);
+    connect(m_windowSequenceTemplate, QOverload<int>::of(&QComboBox::activated), this, [this](int index) {
+        const auto sequence = m_windowSequenceTemplate->itemData(index).toString();
+        if (sequence.isEmpty()) {
+            return;
+        }
+        m_autoTypeUi->customWindowSequenceButton->setChecked(true);
+        m_autoTypeUi->windowSequenceEdit->setText(sequence);
+        m_windowSequenceTemplate->setCurrentIndex(0);
+    });
 
     m_autoTypeDefaultSequenceGroup->addButton(m_autoTypeUi->inheritSequenceButton);
     m_autoTypeDefaultSequenceGroup->addButton(m_autoTypeUi->customSequenceButton);
@@ -1639,6 +1677,12 @@ void EditEntryWidget::updateAutoTypeEnabled()
     m_autoTypeUi->customSequenceButton->setEnabled(!m_history && autoTypeEnabled);
     m_autoTypeUi->sequenceEdit->setEnabled(autoTypeEnabled && m_autoTypeUi->customSequenceButton->isChecked());
     m_autoTypeUi->openHelpButton->setEnabled(autoTypeEnabled);
+    if (m_autoTypeSequenceTemplate) {
+        m_autoTypeSequenceTemplate->setEnabled(!m_history && autoTypeEnabled);
+    }
+    if (m_windowSequenceTemplate) {
+        m_windowSequenceTemplate->setEnabled(!m_history && autoTypeEnabled && validIndex);
+    }
 
     m_autoTypeUi->assocView->setEnabled(autoTypeEnabled);
     m_autoTypeUi->assocAddButton->setEnabled(!m_history);

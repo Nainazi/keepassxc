@@ -23,6 +23,7 @@
 #include "ui_EditGroupWidgetBrowser.h"
 #endif
 
+#include "autotype/AutoType.h"
 #include "core/Config.h"
 #include "core/Metadata.h"
 #include "gui/EditWidgetIcons.h"
@@ -75,6 +76,25 @@ EditGroupWidget::EditGroupWidget(QWidget* parent)
     , m_group(nullptr)
 {
     m_mainUi->setupUi(m_editGroupWidgetMain);
+
+    m_autoTypeSequenceTemplate = new QComboBox(m_editGroupWidgetMain);
+    m_autoTypeSequenceTemplate->setAccessibleName(tr("Auto-Type sequence template"));
+    m_autoTypeSequenceTemplate->setToolTip(
+        tr("Insert a preset login sequence. The field stays editable afterwards."));
+    m_autoTypeSequenceTemplate->addItem(tr("Insert sequence template…"));
+    for (const auto& preset : AutoType::sequenceTemplates()) {
+        m_autoTypeSequenceTemplate->addItem(preset.label, preset.sequence);
+    }
+    m_mainUi->horizontalLayout_2->insertWidget(1, m_autoTypeSequenceTemplate);
+    connect(m_autoTypeSequenceTemplate, QOverload<int>::of(&QComboBox::activated), this, [this](int index) {
+        const auto sequence = m_autoTypeSequenceTemplate->itemData(index).toString();
+        if (sequence.isEmpty()) {
+            return;
+        }
+        m_mainUi->autoTypeSequenceCustomRadio->setChecked(true);
+        m_mainUi->autoTypeSequenceCustomEdit->setText(sequence);
+        m_autoTypeSequenceTemplate->setCurrentIndex(0);
+    });
 
     addPage(tr("Group"), icons()->icon("document-edit"), m_editGroupWidgetMain);
     addPage(tr("Icon"), icons()->icon("preferences-desktop-icons"), m_editGroupWidgetIcons);

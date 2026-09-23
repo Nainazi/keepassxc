@@ -285,6 +285,11 @@ void AutoType::executeAutoTypeActions(const Entry* entry,
 {
     if (!m_platform) {
         qWarning() << "Auto-Type platform not available, cannot perform Auto-Type.";
+        if (getMainWindow()) {
+            MessageBox::warning(getMainWindow(),
+                                tr("Auto-Type"),
+                                tr("Auto-Type is not available on this desktop session."));
+        }
         return;
     }
 
@@ -313,9 +318,9 @@ void AutoType::executeAutoTypeActions(const Entry* entry,
         if (!macUtils()->enableAccessibility()) {
             MessageBox::information(nullptr,
                                     tr("Permission Required"),
-                                    tr("KeePassXC requires the Accessibility permission in order to perform entry "
+                                    tr("奈娜子密码本 requires the Accessibility permission in order to perform entry "
                                        "level Auto-Type. If you already granted permission, you may have to restart "
-                                       "KeePassXC."));
+                                       "奈娜子密码本."));
             return;
         }
 
@@ -348,6 +353,11 @@ void AutoType::executeAutoTypeActions(const Entry* entry,
         // Cancel Auto-Type if the active window changed
         if (m_platform->activeWindow() != window) {
             qWarning("Active window changed, interrupting auto-type.");
+            if (getMainWindow()) {
+                MessageBox::warning(getMainWindow(),
+                                    tr("Auto-Type"),
+                                    tr("Auto-Type stopped because the target window changed or lost focus."));
+            }
             break;
         }
 
@@ -388,16 +398,34 @@ void AutoType::executeAutoTypeActions(const Entry* entry,
  * Single Autotype entry-point function
  * Look up the Auto-Type sequence for the given entry then perform Auto-Type in the active window
  */
+QList<AutoType::SequenceTemplate> AutoType::sequenceTemplates()
+{
+    return {{tr("Username, Tab, password, Enter"), QStringLiteral("{USERNAME}{TAB}{PASSWORD}{ENTER}")},
+            {tr("Username, Tab, password, Tab, Enter"), QStringLiteral("{USERNAME}{TAB}{PASSWORD}{TAB}{ENTER}")},
+            {tr("Password, Enter"), QStringLiteral("{PASSWORD}{ENTER}")}};
+}
+
 void AutoType::performAutoType(const Entry* entry)
 {
     if (!m_platform) {
+        if (getMainWindow()) {
+            MessageBox::warning(getMainWindow(),
+                                tr("Auto-Type"),
+                                tr("Auto-Type is not available on this desktop session."));
+        }
         return;
     }
 
     auto sequences = entry->autoTypeSequences();
-    if (!sequences.isEmpty()) {
-        executeAutoTypeActions(entry, sequences.first());
+    if (sequences.isEmpty()) {
+        if (getMainWindow()) {
+            MessageBox::warning(getMainWindow(), tr("Auto-Type"), tr("This entry has no Auto-Type sequence."));
+        }
+        qWarning("Auto-Type: entry has no sequence.");
+        return;
     }
+
+    executeAutoTypeActions(entry, sequences.first());
 }
 
 /**
@@ -407,6 +435,18 @@ void AutoType::performAutoType(const Entry* entry)
 void AutoType::performAutoTypeWithSequence(const Entry* entry, const QString& sequence)
 {
     if (!m_platform) {
+        if (getMainWindow()) {
+            MessageBox::warning(getMainWindow(),
+                                tr("Auto-Type"),
+                                tr("Auto-Type is not available on this desktop session."));
+        }
+        return;
+    }
+
+    if (sequence.isEmpty()) {
+        if (getMainWindow()) {
+            MessageBox::warning(getMainWindow(), tr("Auto-Type"), tr("This entry has no Auto-Type sequence."));
+        }
         return;
     }
 
@@ -416,11 +456,20 @@ void AutoType::performAutoTypeWithSequence(const Entry* entry, const QString& se
 void AutoType::startGlobalAutoType(const QString& search)
 {
     if (!m_platform) {
+        if (getMainWindow()) {
+            MessageBox::warning(getMainWindow(),
+                                tr("Auto-Type"),
+                                tr("Auto-Type is not available on this desktop session."));
+        }
         return;
     }
 
-    // Never Auto-Type into KeePassXC itself
+    // Never Auto-Type into 奈娜子密码本 itself
     if (getMainWindow() && (qApp->activeWindow() || qApp->activeModalWidget())) {
+        MessageBox::information(getMainWindow(),
+                                tr("Auto-Type"),
+                                tr("Auto-Type cannot type into 奈娜子密码本. Switch to the login window, then press "
+                                   "the global shortcut again."));
         return;
     }
 
@@ -437,9 +486,9 @@ void AutoType::startGlobalAutoType(const QString& search)
             MessageBox::information(
                 nullptr,
                 tr("Permission Required"),
-                tr("KeePassXC requires the Accessibility and Screen Recorder permission in order to perform global "
+                tr("奈娜子密码本 requires the Accessibility and Screen Recorder permission in order to perform global "
                    "Auto-Type. Screen Recording is necessary to use the window title to find entries. If you "
-                   "already granted permission, you may have to restart KeePassXC."));
+                   "already granted permission, you may have to restart 奈娜子密码本."));
             return;
         }
     }
@@ -455,6 +504,13 @@ void AutoType::startGlobalAutoType(const QString& search)
     }
 #endif
 
+    if (m_windowForGlobal == 0 && m_windowTitleForGlobal.isEmpty() && getMainWindow()) {
+        MessageBox::warning(getMainWindow(),
+                            tr("Auto-Type"),
+                            tr("Could not detect a target window. Focus the login window and try Auto-Type again."));
+        return;
+    }
+
     emit globalAutoTypeTriggered(search);
 }
 
@@ -464,7 +520,21 @@ void AutoType::startGlobalAutoType(const QString& search)
  */
 void AutoType::performGlobalAutoType(const QList<QSharedPointer<Database>>& dbList, const QString& search)
 {
-    if (!m_platform || !m_inGlobalAutoTypeDialog.tryLock()) {
+    if (!m_platform) {
+        if (getMainWindow()) {
+            MessageBox::warning(getMainWindow(),
+                                tr("Auto-Type"),
+                                tr("Auto-Type is not available on this desktop session."));
+        }
+        return;
+    }
+
+    if (!m_inGlobalAutoTypeDialog.tryLock()) {
+        if (getMainWindow()) {
+            MessageBox::information(getMainWindow(),
+                                    tr("Auto-Type"),
+                                    tr("An Auto-Type window is already open."));
+        }
         return;
     }
 
@@ -501,6 +571,7 @@ void AutoType::performGlobalAutoType(const QList<QSharedPointer<Database>>& dbLi
         getMainWindow()->closeModalWindow();
 
         auto* selectDialog = new AutoTypeSelectDialog();
+        selectDialog->setTargetWindowTitle(m_windowTitleForGlobal);
         selectDialog->setMatches(matchList, dbList, m_lastMatch);
 
         if (!search.isEmpty()) {
@@ -538,7 +609,12 @@ void AutoType::performGlobalAutoType(const QList<QSharedPointer<Database>>& dbLi
         // Only one match and not asking, do it!
         executeAutoTypeActions(matchList.first().first, matchList.first().second, m_windowForGlobal);
     } else {
-        // We should never get here
+        const QString message = m_windowTitleForGlobal.isEmpty()
+                                    ? tr("Auto-Type could not read the target window, and no entry was selected.")
+                                    : tr("No entry in the unlocked databases matches the window “%1”.")
+                                          .arg(m_windowTitleForGlobal);
+        qWarning().noquote() << "Auto-Type:" << message;
+        MessageBox::warning(getMainWindow(), tr("Auto-Type"), message);
         emit autotypeFinished();
     }
 }

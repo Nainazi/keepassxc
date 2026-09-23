@@ -1,0 +1,222 @@
+/* 奈娜子密码本 — pastel anime theme. Readable first, cute second. */
+
+QMainWindow, QDialog, QWizard {
+    background-color: #F7F1FB;
+}
+
+QToolBar {
+    background: #F3E8F8;
+    border: none;
+    spacing: 6px;
+    padding: 6px 8px;
+}
+
+QMenuBar {
+    background: #F7F1FB;
+    color: #4A3558;
+    spacing: 2px;
+    padding: 2px 4px;
+}
+
+QMenuBar::item {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: transparent;
+}
+
+QMenuBar::item:selected {
+    background: #F6D5E6;
+    color: #4A2340;
+}
+
+QMenu {
+    background: #FFFBFE;
+    color: #4A3558;
+    border: 1px solid #E6D6F0;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+QMenu::item {
+    padding: 6px 22px;
+    border-radius: 6px;
+}
+
+QMenu::item:selected {
+    background: #F8D5E6;
+    color: #4A2340;
+}
+
+QStatusBar {
+    background: #F3E8F8;
+    color: #6A5478;
+}
+
+QPushButton {
+    background: #F3E6F6;
+    color: #4A3558;
+    border: 1px solid #E3D0EE;
+    border-radius: 10px;
+    padding: 6px 14px;
+    min-height: 20px;
+}
+
+QPushButton:hover {
+    background: #EBD8F4;
+}
+
+QPushButton:pressed {
+    background: #E2C8F0;
+}
+
+QPushButton:default {
+    background: #F4B7D2;
+    border-color: #E59BBD;
+    color: #4A2340;
+}
+
+QPushButton:default:hover, QPushButton:checked:hover {
+    background: #F09EC4;
+}
+
+QPushButton:disabled {
+    color: #A898B4;
+    background: #F6F0F8;
+    border-color: #EDE4F2;
+}
+
+QToolButton {
+    border-radius: 8px;
+    padding: 4px;
+}
+
+QToolButton:hover {
+    background: #F6D5E6;
+}
+
+QLineEdit, QPlainTextEdit, QTextEdit, QSpinBox, QDoubleSpinBox, QDateTimeEdit, QDateEdit, QTimeEdit {
+    background: #FFFBFE;
+    color: #3E2A4A;
+    border: 1px solid #E4D4F0;
+    border-radius: 8px;
+    padding: 4px 8px;
+    selection-background-color: #F6D0E2;
+    selection-color: #4A2340;
+}
+
+QComboBox {
+    background: #FFFBFE;
+    color: #3E2A4A;
+    border: 1px solid #E4D4F0;
+    border-radius: 8px;
+    padding: 4px 8px;
+    min-height: 22px;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 22px;
+}
+
+QComboBox QAbstractItemView {
+    background: #FFFBFE;
+    color: #3E2A4A;
+    selection-background-color: #F8D5E6;
+    selection-color: #4A2340;
+    border: 1px solid #E6D6F0;
+    border-radius: 8px;
+}
+
+QTreeView, QTableView, QListView {
+    background: #FFFBFE;
+    alternate-background-color: #FBF4F8;
+    border: 1px solid #EDE0F4;
+    border-radius: 8px;
+    selection-background-color: #F8D5E6;
+    selection-color: #4A2340;
+}
+
+QHeaderView::section {
+    background: #F6EEF8;
+    color: #6A5478;
+    border: none;
+    border-bottom: 1px solid #EDE0F4;
+    padding: 6px;
+}
+
+QGroupBox {
+    border: 1px solid #E8D8F2;
+    border-radius: 12px;
+    margin-top: 14px;
+    padding: 12px 8px 8px 8px;
+    background: #FFFBFE;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 6px;
+    color: #9A5C86;
+}
+
+QTabBar::tab {
+    background: #EFE4F6;
+    color: #5C466C;
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin: 2px;
+}
+
+QTabBar::tab:selected {
+    background: #F8D0E4;
+    color: #4A2340;
+}
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 12px;
+    margin: 2px;
+}
+
+QScrollBar::handle:vertical {
+    background: #E3C6E4;
+    border-radius: 5px;
+    min-height: 24px;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 12px;
+    margin: 2px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #E3C6E4;
+    border-radius: 5px;
+    min-width: 24px;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line {
+    height: 0;
+    width: 0;
+}
+
+QToolTip {
+    color: #FFF8FC;
+    background-color: #5C3D72;
+    border: none;
+    padding: 6px;
+    border-radius: 8px;
+}
+
+DatabaseWidget:!active,
+DatabaseWidget #groupView:!active, DatabaseWidget #tagView:!active,
+EntryPreviewWidget *:!active[blendIn="true"] {
+    background-color: #FBF7FD;
+}
+
+DatabaseWidget:disabled,
+DatabaseWidget #groupView:disabled, DatabaseWidget #tagView:disabled,
+EntryPreviewWidget *:disabled[blendIn="true"] {
+    background-color: #F3E8F4;
+}

@@ -1962,12 +1962,14 @@ void MainWindow::restartApp(const QString& message)
 
 void MainWindow::initViewMenu()
 {
+    m_ui->actionThemeNainazi->setData("nainazi");
     m_ui->actionThemeAuto->setData("auto");
     m_ui->actionThemeLight->setData("light");
     m_ui->actionThemeDark->setData("dark");
     m_ui->actionThemeClassic->setData("classic");
 
     auto themeActions = new QActionGroup(this);
+    themeActions->addAction(m_ui->actionThemeNainazi);
     themeActions->addAction(m_ui->actionThemeAuto);
     themeActions->addAction(m_ui->actionThemeLight);
     themeActions->addAction(m_ui->actionThemeDark);
@@ -2115,6 +2117,7 @@ void MainWindow::initActionCollection()
                     m_ui->actionClearSSHAgent,
                     m_ui->actionSettings,
                     // View Menu
+                    m_ui->actionThemeNainazi,
                     m_ui->actionThemeAuto,
                     m_ui->actionThemeLight,
                     m_ui->actionThemeDark,

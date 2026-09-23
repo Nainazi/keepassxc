@@ -21,6 +21,7 @@
 
 #include "AutoTypeAction.h"
 
+#include <QList>
 #include <QMutex>
 #include <QTimer>
 #include <QWidget>
@@ -44,6 +45,13 @@ public:
     void unregisterGlobalShortcut();
     void performAutoType(const Entry* entry);
     void performAutoTypeWithSequence(const Entry* entry, const QString& sequence);
+
+    struct SequenceTemplate
+    {
+        QString label;
+        QString sequence;
+    };
+    static QList<SequenceTemplate> sequenceTemplates();
 
     static bool verifyAutoTypeSyntax(const QString& sequence, const Entry* entry, QString& error);
 

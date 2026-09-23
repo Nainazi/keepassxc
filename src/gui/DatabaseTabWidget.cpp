@@ -930,7 +930,9 @@ void DatabaseTabWidget::performGlobalAutoType(const QString& search)
 {
     auto currentDbWidget = currentDatabaseWidget();
     if (!currentDbWidget) {
-        // No open databases, nothing to do
+        MessageBox::warning(this,
+                            tr("Auto-Type"),
+                            tr("No database is open. Open and unlock a database in 奈娜子密码本 before using Auto-Type."));
         return;
     } else if (currentDbWidget->isLocked()) {
         // Current database tab is locked, match behavior of browser unlock - prompt with

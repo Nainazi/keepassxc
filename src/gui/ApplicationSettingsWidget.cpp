@@ -81,6 +81,18 @@ ApplicationSettingsWidget::ApplicationSettingsWidget(QWidget* parent)
 
     m_secUi->setupUi(m_secWidget);
     m_generalUi->setupUi(m_generalWidget);
+
+    QStringList templateNames;
+    for (const auto& preset : AutoType::sequenceTemplates()) {
+        templateNames << QStringLiteral("%1 (%2)").arg(preset.label, preset.sequence);
+    }
+    auto* autoTypeHint = new QLabel(
+        tr("Default global shortcut is Ctrl+Shift+A. Auto-Type runs only when you trigger it. "
+           "Entry and group editors can insert sequence templates: %1.")
+            .arg(templateNames.join(QStringLiteral("; "))),
+        m_generalUi->tabAutotype);
+    autoTypeHint->setWordWrap(true);
+    m_generalUi->verticalLayout_2->insertWidget(0, autoTypeHint);
     addPage(tr("General"), icons()->icon("preferences-other"), m_generalWidget);
     addPage(tr("Security"), icons()->icon("security-high"), m_secWidget);
 #ifdef KPXC_FEATURE_BROWSER

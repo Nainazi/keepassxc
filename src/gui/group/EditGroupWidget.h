@@ -86,6 +86,7 @@ private:
     void setRestrictKeyCustomData(CustomData* customData);
 
     const QScopedPointer<Ui::EditGroupWidgetMain> m_mainUi;
+    QComboBox* m_autoTypeSequenceTemplate = nullptr;
 
     QPointer<QScrollArea> m_editGroupWidgetMain;
     QPointer<EditWidgetIcons> m_editGroupWidgetIcons;
