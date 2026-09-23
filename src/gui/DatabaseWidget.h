@@ -279,6 +279,7 @@ private slots:
     void emitEntryContextMenuRequested(const QPoint& pos);
     void onEntryChanged(Entry* entry);
     void onGroupChanged();
+    void updateEmptyNotebookLabel();
     void onDatabaseModified();
     void onDatabaseNonDataChanged();
     void onAutosaveDelayTimeout();
@@ -313,6 +314,7 @@ private:
     QPointer<QSplitter> m_previewSplitter;
     QPointer<QLabel> m_searchingLabel;
     QPointer<ElidedLabel> m_shareLabel;
+    QPointer<QLabel> m_emptyNotebookLabel;
     QPointer<EditEntryWidget> m_editEntryWidget;
     QPointer<EditGroupWidget> m_editGroupWidget;
     QPointer<EditEntryWidget> m_historyEditEntryWidget;

@@ -51,6 +51,7 @@
 #include "gui/osutils/OSUtils.h"
 #include "gui/remote/RemoteSettings.h"
 #include "keeshare/KeeShare.h"
+#include "keeshare/KeeShareSettings.h"
 #include "keeshare/SettingsPageKeeShare.h"
 #include "keys/drivers/YubiKey.h"
 
@@ -70,6 +71,7 @@
 
 #ifdef KPXC_FEATURE_BROWSER
 #include "browser/BrowserService.h"
+#include "browser/BrowserSettings.h"
 #endif
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS) && !defined(QT_NO_DBUS)
@@ -202,9 +204,16 @@ MainWindow::MainWindow()
     initViewMenu();
     initActionCollection();
 
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
     m_ui->settingsWidget->addSettingsPage(new ShortcutSettingsPage());
+#endif
 
 #ifdef KPXC_FEATURE_BROWSER
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Keep the integration library, but do not run it without a settings page.
+    browserSettings()->setEnabled(false);
+    browserService()->setEnabled(false);
+#endif
     connect(
         browserService(), &BrowserService::requestUnlock, m_ui->tabWidget, &DatabaseTabWidget::performBrowserUnlock);
 #endif
@@ -213,24 +222,36 @@ MainWindow::MainWindow()
     connect(sshAgent(), SIGNAL(error(QString)), this, SLOT(showErrorMessage(QString)));
     connect(sshAgent(), SIGNAL(enabledChanged(bool)), this, SLOT(agentEnabled(bool)));
     connect(m_ui->actionClearSSHAgent, SIGNAL(triggered()), SLOT(clearSSHAgent()));
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    sshAgent()->setEnabled(false);
+#else
     m_ui->settingsWidget->addSettingsPage(new AgentSettingsPage());
+#endif
 #else
     agentEnabled(false);
 #endif
 
     KeeShare::init(this);
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Sharing stays in the library so existing KDBX custom data is left alone,
+    // but import/export sync is turned off and has no settings page.
+    KeeShare::setActive(KeeShareSettings::Active());
+#else
     m_ui->settingsWidget->addSettingsPage(new SettingsPageKeeShare(m_ui->tabWidget));
+#endif
     connect(KeeShare::instance(),
             SIGNAL(sharingMessage(QString, MessageWidget::MessageType)),
             SLOT(displayGlobalMessage(QString, MessageWidget::MessageType)));
 
 #ifdef KPXC_FEATURE_FDOSECRETS
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
     auto fdoSS = new FdoSecretsPlugin(m_ui->tabWidget);
     connect(fdoSS, &FdoSecretsPlugin::error, this, &MainWindow::showErrorMessage);
     connect(fdoSS, &FdoSecretsPlugin::requestSwitchToDatabases, this, &MainWindow::switchToDatabases);
     connect(fdoSS, &FdoSecretsPlugin::requestShowNotification, this, &MainWindow::displayDesktopNotification);
     fdoSS->updateServiceState();
     m_ui->settingsWidget->addSettingsPage(fdoSS);
+#endif
 #endif
 
     connect(YubiKey::instance(), SIGNAL(userInteractionRequest()), SLOT(showYubiKeyPopup()), Qt::QueuedConnection);
@@ -410,6 +431,11 @@ MainWindow::MainWindow()
     m_ui->actionEntryImportPasskey->setIcon(icons()->icon("document-import"));
     m_ui->actionEntryRemovePasskey->setIcon(icons()->icon("document-close"));
 #endif
+
+    applyNainaziCoreToolbar();
+    enforceNainaziCoreUi();
+    // ActionCollection restores .ui shortcuts one millisecond later. Hide them again.
+    QTimer::singleShot(1, this, [this] { enforceNainaziCoreUi(); });
 
     m_actionMultiplexer.connect(SIGNAL(currentModeChanged(DatabaseWidget::Mode)), this, SLOT(updateMenuActionState()));
     m_actionMultiplexer.connect(SIGNAL(groupChanged()), this, SLOT(updateMenuActionState()));
@@ -1007,6 +1033,7 @@ void MainWindow::updateMenuActionState()
 #endif
 
     m_searchWidgetAction->setEnabled(inDatabase);
+    enforceNainaziCoreUi();
 }
 
 void MainWindow::updateToolbarSeparatorVisibility()
@@ -1630,6 +1657,7 @@ void MainWindow::agentEnabled(bool enabled)
     m_ui->actionEntryRemoveFromAgent->setVisible(enabled);
     m_ui->actionClearSSHAgent->setEnabled(enabled);
     m_ui->actionClearSSHAgent->setVisible(enabled);
+    enforceNainaziCoreUi();
 }
 
 void MainWindow::showEntryContextMenu(const QPoint& globalPos)
@@ -1973,6 +2001,93 @@ void MainWindow::restartApp(const QString& message)
     } else {
         m_restartRequested = false;
     }
+}
+
+void MainWindow::applyNainaziCoreToolbar()
+{
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Notebook toolbar: New, Edit, Delete, copy user, copy password, Auto-Type, Lock, Search.
+    const auto existing = m_ui->toolBar->actions();
+    for (QAction* action : existing) {
+        m_ui->toolBar->removeAction(action);
+    }
+
+    m_ui->toolBar->addAction(m_ui->actionEntryNew);
+    m_ui->toolBar->addAction(m_ui->actionEntryEdit);
+    m_ui->toolBar->addAction(m_ui->actionEntryDelete);
+    m_ui->toolBar->addSeparator();
+    m_ui->toolBar->addAction(m_ui->actionEntryCopyUsername);
+    m_ui->toolBar->addAction(m_ui->actionEntryCopyPassword);
+    m_ui->toolBar->addAction(m_ui->actionEntryAutoType);
+    m_ui->toolBar->addSeparator();
+    m_ui->toolBar->addAction(m_ui->actionLockDatabaseToolbar);
+    if (m_searchWidgetAction) {
+        m_ui->toolBar->addAction(m_searchWidgetAction);
+    }
+
+    if (auto* autoTypeButton = qobject_cast<QToolButton*>(m_ui->toolBar->widgetForAction(m_ui->actionEntryAutoType))) {
+        autoTypeButton->setPopupMode(QToolButton::MenuButtonPopup);
+    }
+    if (auto* lockButton =
+            qobject_cast<QToolButton*>(m_ui->toolBar->widgetForAction(m_ui->actionLockDatabaseToolbar))) {
+        lockButton->setPopupMode(QToolButton::MenuButtonPopup);
+    }
+#endif
+}
+
+void MainWindow::enforceNainaziCoreUi()
+{
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    const auto hide = [](QAction* action) {
+        if (!action) {
+            return;
+        }
+        action->setVisible(false);
+        // Drop shortcuts so hidden power features cannot be opened from the keyboard.
+        action->setShortcut(QKeySequence());
+    };
+
+    hide(m_ui->actionReports);
+    hide(m_ui->actionPasskeys);
+    hide(m_ui->actionImportPasskey);
+    hide(m_ui->actionEntryImportPasskey);
+    hide(m_ui->actionEntryRemovePasskey);
+    hide(m_ui->actionDatabaseMerge);
+    hide(m_ui->actionExportCsv);
+    hide(m_ui->actionExportHtml);
+    hide(m_ui->actionExportXML);
+    hide(m_ui->actionClearSSHAgent);
+    hide(m_ui->actionEntryAddToAgent);
+    hide(m_ui->actionEntryRemoveFromAgent);
+    hide(m_ui->actionEntryDownloadIcon);
+    hide(m_ui->actionGroupDownloadFavicons);
+    hide(m_ui->actionEntryMoveUp);
+    hide(m_ui->actionEntryMoveDown);
+    hide(m_ui->actionDonate);
+    hide(m_ui->actionBugReport);
+    hide(m_ui->actionOnlineHelp);
+    hide(m_ui->actionCheckForUpdates);
+    hide(m_ui->actionCompactMode);
+    hide(m_ui->actionAlwaysOnTop);
+    hide(m_ui->actionAllowScreenCapture);
+    hide(m_ui->menuEntryCopyAttribute->menuAction());
+    hide(m_ui->menuTags->menuAction());
+    hide(m_ui->menuExport->menuAction());
+    hide(m_ui->menuRemoteSync->menuAction());
+
+    const QList<QMenu*> menus = {m_ui->menuFile,
+                                 m_ui->menuEntries,
+                                 m_ui->menuGroups,
+                                 m_ui->menuTools,
+                                 m_ui->menuView,
+                                 m_ui->menuHelp,
+                                 m_entryContextMenu};
+    for (QMenu* menu : menus) {
+        if (menu) {
+            menu->setSeparatorsCollapsible(true);
+        }
+    }
+#endif
 }
 
 void MainWindow::initViewMenu()

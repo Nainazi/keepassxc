@@ -29,6 +29,8 @@
 #include "keys/PasswordKey.h"
 #include "quickunlock/QuickUnlockInterface.h"
 
+#include "config-keepassx.h"
+
 #include <QLayout>
 #include <QPushButton>
 
@@ -57,6 +59,11 @@ DatabaseSettingsWidgetDatabaseKey::DatabaseSettingsWidgetDatabaseKey(QWidget* pa
     m_additionalKeyOptions->layout()->setSpacing(20);
     m_additionalKeyOptions->layout()->addWidget(m_keyFileEditWidget);
     m_additionalKeyOptions->layout()->addWidget(m_yubiKeyEditWidget);
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Challenge-response stays available for databases that already use it,
+    // and on the unlock screen, but is not offered as a new credential.
+    m_yubiKeyEditWidget->setVisible(false);
+#endif
     m_additionalKeyOptions->setVisible(false);
 
     connect(m_additionalKeyOptionsToggle, SIGNAL(clicked()), SLOT(showAdditionalKeyOptions()));
@@ -87,12 +94,19 @@ void DatabaseSettingsWidgetDatabaseKey::loadSettings(QSharedPointer<Database> db
             }
         }
 
+        bool hasChallengeResponse = false;
         for (const auto& key : m_db->key()->challengeResponseKeys()) {
             if (key->uuid() == ChallengeResponseKey::UUID) {
                 m_yubiKeyEditWidget->setComponentAdded(true);
                 hasAdditionalKeys = true;
+                hasChallengeResponse = true;
             }
         }
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+        m_yubiKeyEditWidget->setVisible(hasChallengeResponse);
+#else
+        Q_UNUSED(hasChallengeResponse);
+#endif
 
         setAdditionalKeyOptionsVisible(hasAdditionalKeys);
     }

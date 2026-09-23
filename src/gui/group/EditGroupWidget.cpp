@@ -17,6 +17,7 @@
  */
 
 #include "EditGroupWidget.h"
+#include "config-keepassx.h"
 #include "ui_EditGroupWidgetMain.h"
 #if defined(KPXC_FEATURE_BROWSER)
 #include "browser/BrowserService.h"
@@ -98,12 +99,14 @@ EditGroupWidget::EditGroupWidget(QWidget* parent)
 
     addPage(tr("Group"), icons()->icon("document-edit"), m_editGroupWidgetMain);
     addPage(tr("Icon"), icons()->icon("preferences-desktop-icons"), m_editGroupWidgetIcons);
-#if defined(KPXC_FEATURE_BROWSER)
+#if defined(KPXC_FEATURE_BROWSER) && !defined(KPXC_FEATURE_NAINAZI_CORE_UI)
     if (config()->get(Config::Browser_Enabled).toBool()) {
         initializeBrowserPage();
     }
 #endif
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
     addEditPage(new EditGroupPageKeeShare(this));
+#endif
     addPage(tr("Properties"), icons()->icon("document-properties"), m_editWidgetProperties);
 
     connect(m_mainUi->expireCheck, SIGNAL(toggled(bool)), m_mainUi->expireDatePicker, SLOT(setEnabled(bool)));

@@ -177,6 +177,42 @@
 <context>
     <name>ApplicationSettingsWidget</name>
     <message>
+        <source>Theme</source>
+        <translation>主题</translation>
+    </message>
+    <message>
+        <source>奈娜子</source>
+        <translation>奈娜子</translation>
+    </message>
+    <message>
+        <source>Follow system</source>
+        <translation>跟随系统</translation>
+    </message>
+    <message>
+        <source>Light</source>
+        <translation>浅色</translation>
+    </message>
+    <message>
+        <source>Dark</source>
+        <translation>深色</translation>
+    </message>
+    <message>
+        <source>Classic</source>
+        <translation>经典</translation>
+    </message>
+    <message>
+        <source>奈娜子 is the notebook look. Font size, the toolbar, and the system tray are below. Switching to or from Classic needs a restart.</source>
+        <translation>奈娜子是这本密码笔记的样子。字号、工具栏和系统托盘在下面。换成经典主题或从经典主题换回来需要重新启动。</translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation>外观</translation>
+    </message>
+    <message>
+        <source>Password Generator</source>
+        <translation>密码生成器</translation>
+    </message>
+    <message>
         <source>Application Settings</source>
         <translation>应用程序设置</translation>
     </message>
@@ -2842,6 +2878,10 @@ This is definitely a bug, please report it to the developers.</source>
 </context>
 <context>
     <name>DatabaseWidget</name>
+    <message>
+        <source>This group is empty. Choose New Entry to write a login down.</source>
+        <translation>这个分组还是空的。用「新建条目」记下一个账号。</translation>
+    </message>
     <message>
         <source>Searches and Tags</source>
         <translation>搜索与标签</translation>
@@ -10731,6 +10771,30 @@ Example: JBSWY3DPEHPK3PXP</source>
     <message>
         <source>Import File</source>
         <translation>导入文件</translation>
+    </message>
+    <message>
+        <source>奈娜子密码本 %1</source>
+        <translation>奈娜子密码本 %1</translation>
+    </message>
+    <message>
+        <source>A password notebook just for you. Logins live in an encrypted KDBX file, and Auto-Type runs only when you press the shortcut.</source>
+        <translation>一本只属于你的密码笔记。账号存在加密的 KDBX 文件里，自动输入只在你按下快捷键时发生。</translation>
+    </message>
+    <message>
+        <source>New passbook</source>
+        <translation>新建密码本</translation>
+    </message>
+    <message>
+        <source>Open passbook</source>
+        <translation>打开密码本</translation>
+    </message>
+    <message>
+        <source>Import from another format</source>
+        <translation>从其他格式导入</translation>
+    </message>
+    <message>
+        <source>Opened recently</source>
+        <translation>最近打开</translation>
     </message>
 </context>
 <context>

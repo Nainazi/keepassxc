@@ -148,9 +148,14 @@ EditEntryWidget::EditEntryWidget(QWidget* parent)
 
 #ifdef KPXC_FEATURE_SSHAGENT
     setupSSHAgent();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // The agent is forced off. Keep the widgets so entry save does not touch a
+    // half-built form, but do not list the page.
+    setPageHidden(m_sshAgentWidget, true);
+#endif
 #endif
 
-#ifdef KPXC_FEATURE_BROWSER
+#if defined(KPXC_FEATURE_BROWSER) && !defined(KPXC_FEATURE_NAINAZI_CORE_UI)
     setupBrowser();
 #endif
 

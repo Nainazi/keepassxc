@@ -172,6 +172,8 @@ private:
 
     void initViewMenu();
     void initActionCollection();
+    void applyNainaziCoreToolbar();
+    void enforceNainaziCoreUi();
 
     const QScopedPointer<Ui::MainWindow> m_ui;
     SignalMultiplexer m_actionMultiplexer;

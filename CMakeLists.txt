@@ -67,6 +67,10 @@ option(KPXC_FEATURE_NETWORK "Include code that reaches out to external networks 
 # Re-enable only with -DKPXC_FEATURE_UPDATES=ON. See REBRAND.md.
 option(KPXC_FEATURE_UPDATES "Include automatic update checks; disable for managed distributions" OFF)
 option(KPXC_FEATURE_DOCS "Build offline documentation; requires asciidoctor tool" ON)
+# Personal fork: radical notebook UI. Feature libraries can stay compiled;
+# menus, toolbars, and settings pages for non-core features are hidden.
+# Pass -DKPXC_FEATURE_NAINAZI_CORE_UI=OFF to restore the full KeePassXC chrome.
+option(KPXC_FEATURE_NAINAZI_CORE_UI "Hide non-core desktop UI for the 奈娜子密码本 notebook layout" ON)
 
 # Reconcile update feature with overall network feature
 if(NOT KPXC_FEATURE_NETWORK AND KPXC_FEATURE_UPDATES)
@@ -88,6 +92,7 @@ endif()
 add_feature_info("Networking" KPXC_FEATURE_NETWORK "Code that can reach out to external networks is included (e.g. downloading icons)")
 add_feature_info("Update Checks" KPXC_FEATURE_UPDATES "Periodic update checks can be performed")
 add_feature_info("Documentation" KPXC_FEATURE_DOCS "Offline documentation")
+add_feature_info("Nainazi core UI" KPXC_FEATURE_NAINAZI_CORE_UI "Notebook layout that hides non-core desktop features")
 
 # VCPKG features (must come before project())
 if(WITH_BUILD_QT)

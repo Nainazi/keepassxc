@@ -18,7 +18,10 @@
 
 #include "DatabaseWidget.h"
 
+#include "config-keepassx.h"
+
 #include <QApplication>
+#include <QLabel>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QDesktopServices>
@@ -105,6 +108,10 @@ DatabaseWidget::DatabaseWidget(QSharedPointer<Database> db, QWidget* parent)
     m_messageWidget->setHidden(true);
 
     auto mainLayout = new QVBoxLayout();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    mainLayout->setContentsMargins(12, 10, 12, 10);
+    mainLayout->setSpacing(8);
+#endif
     mainLayout->addWidget(m_messageWidget);
     auto hbox = new QHBoxLayout();
     mainLayout->addLayout(hbox);
@@ -134,12 +141,23 @@ DatabaseWidget::DatabaseWidget(QSharedPointer<Database> db, QWidget* parent)
     m_groupSplitter->setStretchFactor(0, 100);
     m_groupSplitter->setStretchFactor(1, 0);
     m_groupSplitter->setSizes({1, 1});
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Tags are a power-user overlay. The notebook shows the group tree only.
+    tagsWidget->setVisible(false);
+    m_groupSplitter->setSizes({1, 0});
+    m_groupView->setMinimumWidth(148);
+#endif
     // Initial visibility based on config value
     m_groupSplitter->setVisible(!config()->get(Config::GUI_HideGroupPanel).toBool());
 
     auto rightHandSideWidget = new QWidget(m_mainSplitter);
     auto rightHandSideVBox = new QVBoxLayout();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    rightHandSideVBox->setContentsMargins(10, 0, 0, 0);
+    rightHandSideVBox->setSpacing(8);
+#else
     rightHandSideVBox->setContentsMargins(0, 0, 0, 0);
+#endif
     rightHandSideVBox->addWidget(m_searchingLabel);
     rightHandSideVBox->addWidget(m_shareLabel);
     rightHandSideVBox->addWidget(m_previewSplitter);
@@ -175,6 +193,16 @@ DatabaseWidget::DatabaseWidget(QSharedPointer<Database> db, QWidget* parent)
     m_shareLabel->setRawText(tr("Shared group…"));
     m_shareLabel->setAlignment(Qt::AlignCenter);
     m_shareLabel->setVisible(false);
+
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    m_emptyNotebookLabel = new QLabel(m_mainWidget);
+    m_emptyNotebookLabel->setObjectName(QStringLiteral("emptyNotebookLabel"));
+    m_emptyNotebookLabel->setAlignment(Qt::AlignCenter);
+    m_emptyNotebookLabel->setWordWrap(true);
+    m_emptyNotebookLabel->setText(tr("This group is empty. Choose New Entry to write a login down."));
+    m_emptyNotebookLabel->setVisible(false);
+    rightHandSideVBox->insertWidget(1, m_emptyNotebookLabel);
+#endif
 
     m_previewView->setObjectName("previewWidget");
     m_previewView->hide();
@@ -244,6 +272,7 @@ DatabaseWidget::DatabaseWidget(QSharedPointer<Database> db, QWidget* parent)
     } else {
         switchToOpenDatabase();
     }
+    updateEmptyNotebookLabel();
 }
 
 DatabaseWidget::DatabaseWidget(const QString& filePath, QWidget* parent)
@@ -390,7 +419,12 @@ void DatabaseWidget::setSplitterSizes(const QHash<Config::ConfigKey, QList<int>>
         switch (itr.key()) {
         case Config::GUI_SplitterState:
             if (value.size() < 2) {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+                const int groupWidth = 200;
+                value = QList({groupWidth, qMax(1, width() - groupWidth)});
+#else
                 value = QList({static_cast<int>(width() * 0.25), static_cast<int>(width() * 0.75)});
+#endif
             }
             m_mainSplitter->setSizes(value);
             break;
@@ -401,10 +435,14 @@ void DatabaseWidget::setSplitterSizes(const QHash<Config::ConfigKey, QList<int>>
             m_previewSplitter->setSizes(value);
             break;
         case Config::GUI_GroupSplitterState:
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+            m_groupSplitter->setSizes({qMax(1, height()), 0});
+#else
             if (value.size() < 2) {
                 value = QList({static_cast<int>(height() * 0.6), static_cast<int>(height() * 0.4)});
             }
             m_groupSplitter->setSizes(value);
+#endif
             break;
         default:
             break;
@@ -1774,6 +1812,7 @@ void DatabaseWidget::search(const QString& searchtext)
 
     m_searchingLabel->setVisible(true);
     m_shareLabel->setVisible(false);
+    updateEmptyNotebookLabel();
 
     emit searchModeActivated();
 }
@@ -1838,6 +1877,7 @@ void DatabaseWidget::onGroupChanged()
 
     m_previewView->setGroup(group);
 
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
     auto shareLabel = KeeShare::sharingLabel(group);
     if (!shareLabel.isEmpty()) {
         m_shareLabel->setRawText(shareLabel);
@@ -1845,12 +1885,30 @@ void DatabaseWidget::onGroupChanged()
     } else {
         m_shareLabel->setVisible(false);
     }
+#else
+    m_shareLabel->setVisible(false);
+#endif
 
+    updateEmptyNotebookLabel();
     emit groupChanged();
+}
+
+void DatabaseWidget::updateEmptyNotebookLabel()
+{
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (!m_emptyNotebookLabel || !m_entryView || !m_entryView->model()) {
+        return;
+    }
+    const bool show = !isSearchActive() && currentMode() == Mode::ViewMode && m_entryView->model()->rowCount() == 0;
+    m_emptyNotebookLabel->setVisible(show);
+#else
+    // Full KeePassXC chrome has no notebook empty state.
+#endif
 }
 
 void DatabaseWidget::onDatabaseModified()
 {
+    updateEmptyNotebookLabel();
     refreshSearch();
     m_remoteSettings->loadSettings();
     int autosaveDelayMs = m_db->metadata()->autosaveDelayMin() * 60 * 1000; // min to msec for QTimer
@@ -1925,6 +1983,7 @@ void DatabaseWidget::endSearch()
 
     // Tell the search widget to clear
     emit clearSearch();
+    updateEmptyNotebookLabel();
 }
 
 void DatabaseWidget::emitGroupContextMenuRequested(const QPoint& pos)

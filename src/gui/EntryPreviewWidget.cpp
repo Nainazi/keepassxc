@@ -46,6 +46,23 @@ EntryPreviewWidget::EntryPreviewWidget(QWidget* parent)
 {
     m_ui->setupUi(this);
 
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Notebook detail: title, username, password, URL, notes, attachments, Auto-Type.
+    m_ui->entryTagsTitleLabel->hide();
+    m_ui->entryTagsList->hide();
+    m_ui->attributesTitleLabel->hide();
+    m_ui->entryAttributesTable->hide();
+    if (auto* groupTabs = m_ui->groupTabWidget) {
+        const int shareIndex = groupTabs->indexOf(m_ui->groupShareTab);
+        if (shareIndex >= 0) {
+            groupTabs->setTabVisible(shareIndex, false);
+        }
+    }
+    m_ui->gridLayout->setHorizontalSpacing(12);
+    m_ui->gridLayout->setVerticalSpacing(10);
+    m_ui->verticalLayout_5->setContentsMargins(8, 8, 8, 8);
+#endif
+
     // Entry
     m_ui->entryTotpButton->setIcon(icons()->icon("totp"));
     m_ui->entryCloseButton->setIcon(icons()->icon("arrow-collapse-down"));
