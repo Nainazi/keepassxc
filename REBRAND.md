@@ -59,7 +59,7 @@ Application, tray, mime, and Windows icons are generated from one mascot file:
 
 `share/icons/application/nainazi-mascot-source.png`
 
-That file is the only artwork source. It is a flat logo: blonde twin-tails, purple padlock hair clip, smug half-lidded grin, fully inside a rounded square. Do not substitute an older full-body, purple-hair, or more detailed drawing.
+That file is the only artwork source. It is a flat logo: blonde twin-tails, purple padlock hair clip, a light hand over the mouth, smug half-lidded grin, fully inside a rounded square. Do not substitute an older full-body, purple-hair, or more detailed drawing.
 
 Regenerate (needs Pillow):
 
