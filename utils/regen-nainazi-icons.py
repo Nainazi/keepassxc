@@ -5,8 +5,8 @@ Source of truth (do not substitute an older full-body or smile variant):
 
     share/icons/application/nainazi-mascot-source.png
 
-The artwork is whatever PNG is committed at that path. Do not swap in an
-older mascot (full-body book, purple-hair pout, or any other variant).
+The artwork is the user-approved final PNG committed at that path. Do not
+redraw it or swap in another mascot.
 
 Usage (from the repository root):
 
