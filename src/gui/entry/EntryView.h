@@ -19,6 +19,7 @@
 #ifndef KEEPASSX_ENTRYVIEW_H
 #define KEEPASSX_ENTRYVIEW_H
 
+#include <QList>
 #include <QTreeView>
 
 #include "gui/entry/EntryModel.h"
@@ -39,7 +40,10 @@ public:
     Entry* currentEntry();
     void setCurrentEntry(Entry* entry);
     QList<Entry*> selectedEntries();
-    Entry* entryFromIndex(const QModelIndex& index);
+    Entry* entryFromIndex(const QModelIndex& index) const;
+    void setNotebookMode(bool enabled);
+    bool isNotebookMode() const;
+    void displayNotebook(const QList<Entry*>& entries, bool keepOrder);
     QModelIndex indexFromEntry(Entry* entry);
     int currentEntryIndex();
     bool inSearchMode();
@@ -56,6 +60,7 @@ signals:
     void entryActivated(Entry* entry, EntryModel::ModelColumn column);
     void entrySelectionChanged(Entry* entry);
     void viewStateChanged();
+    void toggleFavoriteRequested(Entry* entry);
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;
@@ -78,13 +83,16 @@ private:
     void resetFixedColumns();
     bool isColumnHidden(int logicalIndex);
     void onHeaderChanged();
+    void applyNotebookColumns();
 
     EntryModel* const m_model;
     SortFilterHideProxyModel* const m_sortModel;
     int m_lastIndex;
     Qt::SortOrder m_lastOrder;
     bool m_inSearchMode = false;
+    bool m_notebookMode = false;
     bool m_columnsNeedRelayout = true;
+    class EntryCardDelegate* m_cardDelegate = nullptr;
 
     QMenu* m_headerMenu;
     QActionGroup* m_columnActions;

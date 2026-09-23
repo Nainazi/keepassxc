@@ -57,8 +57,12 @@ SearchWidget::SearchWidget(QWidget* parent)
     connect(this, SIGNAL(escapePressed()), SLOT(clearSearch()));
     connect(m_ui->searchEdit, &QLineEdit::returnPressed, this, &SearchWidget::onReturnPressed);
 
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    m_ui->searchEdit->setPlaceholderText(tr("Search entries…"));
+#else
     m_ui->searchEdit->setPlaceholderText(tr("Search (%1)…", "Search placeholder text, %1 is the keyboard shortcut")
                                              .arg(QKeySequence(QKeySequence::Find).toString(QKeySequence::NativeText)));
+#endif
     m_ui->searchEdit->installEventFilter(this);
 
     m_searchMenu = new QMenu(this);
@@ -82,6 +86,10 @@ SearchWidget::SearchWidget(QWidget* parent)
 
     m_ui->helpIcon->setIcon(icons()->icon("system-help"));
     m_ui->searchEdit->addAction(m_ui->helpIcon, QLineEdit::TrailingPosition);
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Saved searches have no tags pane in the notebook. Syntax help stays, because the field still supports it.
+    m_ui->saveIcon->setVisible(false);
+#endif
 
     m_ui->saveIcon->setIcon(icons()->icon("document-save"));
     m_ui->searchEdit->addAction(m_ui->saveIcon, QLineEdit::TrailingPosition);
@@ -188,7 +196,9 @@ void SearchWidget::startSearchTimer()
 
 void SearchWidget::startSearch()
 {
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
     m_ui->saveIcon->setVisible(true);
+#endif
     search(m_ui->searchEdit->text());
 }
 
@@ -253,7 +263,9 @@ void SearchWidget::showSearchMenu()
 void SearchWidget::onReturnPressed()
 {
     if (m_actionWaitForEnter->isChecked()) {
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
         m_ui->saveIcon->setVisible(true);
+#endif
         emit search(m_ui->searchEdit->text());
     } else {
         emit enterPressed();
@@ -265,12 +277,18 @@ void SearchWidget::performRequestedSearch(const QString& text)
     // This method handles saved searches - it should set the text and immediately trigger search
     // without any delay, regardless of the "Press Enter to search" setting
     m_ui->searchEdit->setText(text);
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
     m_ui->saveIcon->setVisible(!text.isEmpty());
+#endif
     emit search(text);
 }
 
 void SearchWidget::updateSaveButtonVisibility()
 {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    m_ui->saveIcon->setVisible(false);
+#else
     // Show save button whenever there's non-empty text in the search field
     m_ui->saveIcon->setVisible(!m_ui->searchEdit->text().isEmpty());
+#endif
 }

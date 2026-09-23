@@ -30,8 +30,10 @@
 #include <QStyledItemDelegate>
 #include <QWindow>
 
+#include "core/Entry.h"
 #include "gui/Icons.h"
 #include "gui/SortFilterHideProxyModel.h"
+#include "gui/nainazi/EntryCardDelegate.h"
 
 #define ICON_ONLY_SECTION_SIZE 26
 
@@ -217,6 +219,9 @@ void EntryView::displayGroup(Group* group)
     header()->hideSection(EntryModel::ParentGroup);
     setFirstEntryActive();
     m_inSearchMode = false;
+    if (m_notebookMode) {
+        applyNotebookColumns();
+    }
 }
 
 void EntryView::displaySearch(const QList<Entry*>& entries)
@@ -231,6 +236,74 @@ void EntryView::displaySearch(const QList<Entry*>& entries)
     sortByColumn(EntryModel::ParentGroup, Qt::AscendingOrder);
 
     m_inSearchMode = true;
+    if (m_notebookMode) {
+        applyNotebookColumns();
+    }
+}
+
+void EntryView::setNotebookMode(bool enabled)
+{
+    m_notebookMode = enabled;
+    if (!enabled) {
+        return;
+    }
+
+    if (!m_cardDelegate) {
+        m_cardDelegate = new EntryCardDelegate(this);
+        setItemDelegateForColumn(EntryModel::Title, m_cardDelegate);
+        connect(m_cardDelegate, &EntryCardDelegate::toggleFavorite, this, &EntryView::toggleFavoriteRequested);
+    }
+
+    setMouseTracking(true);
+    viewport()->setMouseTracking(true);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    setUniformRowHeights(false);
+    setAlternatingRowColors(false);
+    setIndentation(0);
+    setStyleSheet(QStringLiteral("QTreeView#entryView { background: #FBF7FC; border: none; outline: 0; }"
+                                 "QTreeView#entryView::item { background: transparent; border: none; }"
+                                 "QTreeView#entryView::item:selected { background: transparent; }"
+                                 "QTreeView#entryView::item:hover { background: transparent; }"));
+    applyNotebookColumns();
+}
+
+bool EntryView::isNotebookMode() const
+{
+    return m_notebookMode;
+}
+
+void EntryView::displayNotebook(const QList<Entry*>& entries, bool keepOrder)
+{
+    if (keepOrder) {
+        // Recent and frequent lists are already ordered. Drop the proxy sort so that order sticks.
+        setSortingEnabled(false);
+        m_sortModel->sort(-1);
+        header()->setSortIndicator(-1, Qt::AscendingOrder);
+    } else if (!isSortingEnabled()) {
+        setSortingEnabled(true);
+    }
+
+    m_model->setEntries(entries);
+    m_inSearchMode = false;
+    applyNotebookColumns();
+    setFirstEntryActive();
+}
+
+void EntryView::applyNotebookColumns()
+{
+    if (!m_notebookMode) {
+        return;
+    }
+
+    header()->hide();
+    for (int column = 0; column < header()->count(); ++column) {
+        if (column == EntryModel::Title) {
+            header()->showSection(column);
+            header()->setSectionResizeMode(column, QHeaderView::Stretch);
+        } else {
+            header()->hideSection(column);
+        }
+    }
 }
 
 void EntryView::setFirstEntryActive()
@@ -298,7 +371,7 @@ void EntryView::setCurrentEntry(Entry* entry)
     }
 }
 
-Entry* EntryView::entryFromIndex(const QModelIndex& index)
+Entry* EntryView::entryFromIndex(const QModelIndex& index) const
 {
     if (index.isValid()) {
         return m_model->entryFromIndex(m_sortModel->mapToSource(index));
@@ -342,6 +415,9 @@ bool EntryView::setViewState(const QByteArray& state)
     resetFixedColumns();
     m_columnsNeedRelayout = state.isEmpty();
     onHeaderChanged();
+    if (m_notebookMode) {
+        applyNotebookColumns();
+    }
     return status;
 }
 
@@ -531,6 +607,9 @@ void EntryView::showEvent(QShowEvent* event)
     if (m_columnsNeedRelayout) {
         fitColumnsToWindow();
         m_columnsNeedRelayout = false;
+    }
+    if (m_notebookMode) {
+        applyNotebookColumns();
     }
 }
 

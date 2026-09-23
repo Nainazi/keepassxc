@@ -1312,6 +1312,11 @@ void MainWindow::databaseTabChanged(int tabIndex)
     }
 
     m_actionMultiplexer.setCurrentObject(m_ui->tabWidget->currentDatabaseWidget());
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (auto* dbWidget = m_ui->tabWidget->currentDatabaseWidget()) {
+        dbWidget->adoptNotebookSearch(m_searchWidget);
+    }
+#endif
     updateEntryCountLabel();
 
     // Clear the tags menu to prevent re-use between databases
@@ -1443,6 +1448,11 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 
 bool MainWindow::focusNextPrevChild(bool next)
 {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // The notebook keeps search inside the database widget. The toolbar focus cycle
+    // calls setFocus() on that widget, which calls back into this function.
+    return QMainWindow::focusNextPrevChild(next);
+#else
     // Only navigate around the main window if the database widget is showing the entry view
     auto dbWidget = m_ui->tabWidget->currentDatabaseWidget();
     if (dbWidget && dbWidget->isVisible() && dbWidget->isEntryViewActive()) {
@@ -1477,6 +1487,7 @@ bool MainWindow::focusNextPrevChild(bool next)
 
     // Defer to Qt to make a decision, this maintains normal behavior
     return QMainWindow::focusNextPrevChild(next);
+#endif
 }
 
 void MainWindow::focusSearchWidget()
@@ -2021,8 +2032,9 @@ void MainWindow::applyNainaziCoreToolbar()
     m_ui->toolBar->addAction(m_ui->actionEntryAutoType);
     m_ui->toolBar->addSeparator();
     m_ui->toolBar->addAction(m_ui->actionLockDatabaseToolbar);
-    if (m_searchWidgetAction) {
-        m_ui->toolBar->addAction(m_searchWidgetAction);
+    // Search moves into the entry list header so the notebook matches the three-pane layout.
+    if (m_searchWidget) {
+        m_searchWidget->hide();
     }
 
     if (auto* autoTypeButton = qobject_cast<QToolButton*>(m_ui->toolBar->widgetForAction(m_ui->actionEntryAutoType))) {

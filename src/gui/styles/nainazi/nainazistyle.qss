@@ -230,3 +230,179 @@ DatabaseWidget #groupView:disabled, DatabaseWidget #tagView:disabled,
 EntryPreviewWidget *:disabled[blendIn="true"] {
     background-color: #F3E8F4;
 }
+
+/* Notebook chrome — three panes, cards, calm pink. */
+QWidget#notebookSidebar {
+    background: #F3E7F8;
+    border-radius: 16px;
+}
+
+QWidget#notebookCenter {
+    background: #FBF7FC;
+}
+
+QWidget#notebookDetail,
+QWidget#notebookDetailColumn {
+    background: #FFFBFE;
+    border: 1px solid #F0E0F2;
+    border-radius: 16px;
+}
+
+QLabel#notebookDbName {
+    color: #3E2A4A;
+}
+
+QLabel#notebookDbCount,
+QLabel#notebookSection,
+QLabel#notebookSortLabel,
+QLabel#notebookDetailSubtitle,
+QLabel#notebookFieldCaption {
+    color: #8A7094;
+}
+
+QLabel#notebookSection {
+    font-weight: 600;
+    padding-top: 4px;
+}
+
+QFrame#notebookStatusCard {
+    background: #FDE8F3;
+    border-radius: 14px;
+}
+
+QFrame#notebookStatusCard QLabel {
+    background: transparent;
+    color: #6A4A78;
+}
+
+QLabel#notebookSummary,
+QLabel#notebookDetailTitle {
+    color: #3E2A4A;
+}
+
+QLabel#notebookDetailPlaceholder {
+    color: #8A7094;
+    padding: 24px;
+}
+
+QListWidget#notebookSmartList {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+QListWidget#notebookSmartList::item {
+    color: #4A3558;
+    border-radius: 10px;
+    padding: 4px 8px;
+}
+
+QListWidget#notebookSmartList::item:selected {
+    background: #F8D0E4;
+    color: #4A2340;
+}
+
+QTreeView#groupView {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+QTreeView#groupView::item {
+    color: #4A3558;
+    border-radius: 8px;
+    padding: 3px 4px;
+}
+
+QTreeView#groupView::item:selected,
+QTreeView#groupView::item:selected:active {
+    background: #F8D0E4;
+    color: #4A2340;
+}
+
+QTreeView#groupView[notebookSmart="true"]::item:selected {
+    background: transparent;
+    color: #5C466C;
+}
+
+QFrame#notebookField {
+    background: #FFFBFE;
+    border: 1px solid #F3E6F4;
+    border-radius: 12px;
+}
+
+QLabel#notebookFieldValue {
+    color: #3E2A4A;
+}
+
+QFrame#notebookStrength {
+    background: #FDE8F3;
+    border-radius: 14px;
+}
+
+QLabel#notebookStrengthLabel {
+    color: #4A2340;
+    font-weight: 600;
+}
+
+QLabel#notebookStrengthReason {
+    color: #8A7094;
+}
+
+QPushButton#notebookNewEntry {
+    background: #F4B7D2;
+    color: #4A2340;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-weight: 600;
+}
+
+QPushButton#notebookNewEntry:hover {
+    background: #F09EC4;
+}
+
+QPushButton#notebookNewEntry:disabled {
+    background: #F6E4EE;
+    color: #B59AAD;
+}
+
+QPushButton[notebookGhost="true"] {
+    background: #F7F1FB;
+    color: #5C466C;
+    border: 1px solid #E6D6F0;
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+QPushButton[notebookGhost="true"]:hover {
+    background: #F8D5E6;
+}
+
+QComboBox#notebookSort {
+    min-width: 140px;
+}
+
+QLabel#SearchBanner {
+    background: #F8D5E6;
+    color: #4A2340;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: 600;
+}
+
+QLabel#emptyNotebookLabel {
+    color: #8A7094;
+    background: #FFFBFE;
+    border: 1px dashed #E4D0EC;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+WelcomeWidget QLabel#welcomeLabel {
+    color: #4A2340;
+}
+
+WelcomeWidget QLabel#startLabel {
+    color: #6A5478;
+}

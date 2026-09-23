@@ -21,12 +21,17 @@
 
 #include <QStackedWidget>
 
+#include "config-keepassx.h"
 #include "core/Database.h"
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "gui/MessageWidget.h"
 #include "gui/entry/EntryModel.h"
 #include "remote/RemoteHandler.h"
+
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+#include "gui/nainazi/NotebookCommon.h"
+#endif
 
 class DatabaseOpenDialog;
 class DatabaseOpenWidget;
@@ -46,6 +51,12 @@ class EntryPreviewWidget;
 class TagView;
 class ElidedLabel;
 class RemoteSettings;
+class SearchWidget;
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+class NotebookSidebar;
+class NotebookListHeader;
+class NotebookDetail;
+#endif
 struct RemoteParams;
 
 namespace Ui
@@ -93,6 +104,9 @@ public:
 
     GroupView* groupView();
     EntryView* entryView();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    void adoptNotebookSearch(SearchWidget* search);
+#endif
 
     Group* currentGroup() const;
     bool canCloneCurrentGroup() const;
@@ -280,6 +294,17 @@ private slots:
     void onEntryChanged(Entry* entry);
     void onGroupChanged();
     void updateEmptyNotebookLabel();
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    void setupNotebookChrome();
+    void onNotebookSmartView(int view);
+    void populateNotebookSmartView();
+    void updateNotebookHeading();
+    void toggleNotebookFavorite(Entry* entry);
+    void syncNotebookDetail(Entry* entry);
+    void applyNotebookSort();
+    void triggerNamedAction(const char* name);
+    QWidget* hostWindow() const;
+#endif
     void onDatabaseModified();
     void onDatabaseNonDataChanged();
     void onAutosaveDelayTimeout();
@@ -324,6 +349,13 @@ private:
     QPointer<GroupView> m_groupView;
     QPointer<TagView> m_tagView;
     QPointer<EntryView> m_entryView;
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    NotebookSidebar* m_notebookSidebar = nullptr;
+    NotebookListHeader* m_listHeader = nullptr;
+    NotebookDetail* m_notebookDetail = nullptr;
+    NotebookView m_smartView = NotebookView::Folder;
+    bool m_applyingSmartView = false;
+#endif
 
     QScopedPointer<Group> m_newGroup;
     QScopedPointer<Entry> m_newEntry;

@@ -89,6 +89,8 @@ private:
     void makeConnections(const Group* group);
 
     bool m_backgroundColorVisible = true;
+    // Set when a connected group removes an entry this model is not showing (smart lists, search).
+    bool m_skipEntryRemove = false;
     Group* m_group;
     QList<Entry*> m_entries;
     QList<Entry*> m_orgEntries;

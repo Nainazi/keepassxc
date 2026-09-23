@@ -534,7 +534,14 @@ void EntryModel::entryAdded(Entry* entry)
 
 void EntryModel::entryAboutToRemove(Entry* entry)
 {
-    beginRemoveRows(QModelIndex(), m_entries.indexOf(entry), m_entries.indexOf(entry));
+    const int row = m_entries.indexOf(entry);
+    if (row < 0) {
+        // Smart lists and search results only contain a subset of the connected groups.
+        m_skipEntryRemove = true;
+        return;
+    }
+    m_skipEntryRemove = false;
+    beginRemoveRows(QModelIndex(), row, row);
     if (!m_group) {
         m_entries.removeAll(entry);
     }
@@ -542,6 +549,10 @@ void EntryModel::entryAboutToRemove(Entry* entry)
 
 void EntryModel::entryRemoved()
 {
+    if (m_skipEntryRemove) {
+        m_skipEntryRemove = false;
+        return;
+    }
     if (m_group) {
         m_entries = m_group->entries();
     }
@@ -582,7 +593,10 @@ void EntryModel::entryMovedDown()
 
 void EntryModel::entryDataChanged(Entry* entry)
 {
-    int row = m_entries.indexOf(entry);
+    const int row = m_entries.indexOf(entry);
+    if (row < 0) {
+        return;
+    }
     emit dataChanged(index(row, 0), index(row, columnCount() - 1));
 }
 
