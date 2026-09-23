@@ -43,14 +43,27 @@ DatabaseSettingsDialog::DatabaseSettingsDialog(QWidget* parent)
     , m_databaseKeyWidget(new DatabaseSettingsWidgetDatabaseKey(this))
     , m_encryptionWidget(new DatabaseSettingsWidgetEncryption(this))
 #ifdef KPXC_FEATURE_BROWSER
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    , m_browserWidget(nullptr)
+#else
     , m_browserWidget(new DatabaseSettingsWidgetBrowser(this))
 #endif
+#endif
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    , m_keeShareWidget(nullptr)
+#ifdef KPXC_FEATURE_FDOSECRETS
+    , m_fdoSecretsWidget(nullptr)
+#endif
+    , m_maintenanceWidget(nullptr)
+    , m_remoteWidget(nullptr)
+#else
     , m_keeShareWidget(new DatabaseSettingsWidgetKeeShare(this))
 #ifdef KPXC_FEATURE_FDOSECRETS
     , m_fdoSecretsWidget(new DatabaseSettingsWidgetFdoSecrets(this))
 #endif
     , m_maintenanceWidget(new DatabaseSettingsWidgetMaintenance(this))
     , m_remoteWidget(new DatabaseSettingsWidgetRemote(this))
+#endif
 {
     connect(this, SIGNAL(accepted()), SLOT(save()));
     connect(this, SIGNAL(rejected()), SLOT(reject()));
@@ -72,6 +85,7 @@ DatabaseSettingsDialog::DatabaseSettingsDialog(QWidget* parent)
 
     m_securityTabWidget->setCurrentIndex(0);
 
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
     addPage(tr("Remote Sync"), icons()->icon("remote-sync"), m_remoteWidget);
 
 #ifdef KPXC_FEATURE_BROWSER
@@ -85,6 +99,7 @@ DatabaseSettingsDialog::DatabaseSettingsDialog(QWidget* parent)
 #endif
 
     addPage(tr("Maintenance"), icons()->icon("hammer-wrench"), m_maintenanceWidget);
+#endif
 
     setCurrentPage(0);
 }
@@ -100,15 +115,27 @@ void DatabaseSettingsDialog::load(const QSharedPointer<Database>& db)
     m_generalWidget->loadSettings(db);
     m_databaseKeyWidget->loadSettings(db);
     m_encryptionWidget->loadSettings(db);
-    m_remoteWidget->loadSettings(db);
+    if (m_remoteWidget) {
+        m_remoteWidget->loadSettings(db);
+    }
 #ifdef KPXC_FEATURE_BROWSER
-    m_browserWidget->loadSettings(db);
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (m_browserWidget) {
+        m_browserWidget->loadSettings(db);
+    }
 #endif
-    m_keeShareWidget->loadSettings(db);
+#endif
+    if (m_keeShareWidget) {
+        m_keeShareWidget->loadSettings(db);
+    }
 #ifdef KPXC_FEATURE_FDOSECRETS
-    m_fdoSecretsWidget->loadSettings(db);
+    if (m_fdoSecretsWidget) {
+        m_fdoSecretsWidget->loadSettings(db);
+    }
 #endif
-    m_maintenanceWidget->loadSettings(db);
+    if (m_maintenanceWidget) {
+        m_maintenanceWidget->loadSettings(db);
+    }
 
     m_db = db;
 }
@@ -124,6 +151,9 @@ void DatabaseSettingsDialog::showDatabaseKeySettings(int index)
 
 void DatabaseSettingsDialog::showRemoteSettings()
 {
+    if (!m_remoteWidget) {
+        return;
+    }
     setCurrentPage(2);
 }
 
@@ -146,16 +176,20 @@ void DatabaseSettingsDialog::save()
         return;
     }
 
-    if (!m_remoteWidget->saveSettings()) {
+    if (m_remoteWidget && !m_remoteWidget->saveSettings()) {
         setCurrentPage(2);
         return;
     }
 
     // Browser settings don't have anything to save
 
-    m_keeShareWidget->saveSettings();
+    if (m_keeShareWidget) {
+        m_keeShareWidget->saveSettings();
+    }
 #ifdef KPXC_FEATURE_FDOSECRETS
-    m_fdoSecretsWidget->saveSettings();
+    if (m_fdoSecretsWidget) {
+        m_fdoSecretsWidget->saveSettings();
+    }
 #endif
 
     emit editFinished(true);
@@ -166,9 +200,15 @@ void DatabaseSettingsDialog::reject()
     m_generalWidget->discard();
     m_databaseKeyWidget->discard();
     m_encryptionWidget->discard();
-    m_remoteWidget->discard();
+    if (m_remoteWidget) {
+        m_remoteWidget->discard();
+    }
 #ifdef KPXC_FEATURE_BROWSER
-    m_browserWidget->discard();
+#ifndef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (m_browserWidget) {
+        m_browserWidget->discard();
+    }
+#endif
 #endif
 
     emit editFinished(false);

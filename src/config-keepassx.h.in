@@ -26,6 +26,9 @@
 #cmakedefine KPXC_FEATURE_UPDATES
 #cmakedefine KPXC_FEATURE_DOCS
 
+/* 奈娜子密码本: hide non-core desktop UI even when feature libraries remain. */
+#cmakedefine KPXC_FEATURE_NAINAZI_CORE_UI
+
 /* Distribution */
 #cmakedefine KEEPASSXC_BUILD_TYPE "@KEEPASSXC_BUILD_TYPE@"
 #cmakedefine KEEPASSXC_BUILD_TYPE_RELEASE

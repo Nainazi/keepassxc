@@ -31,6 +31,7 @@
 
 #include "browser/BrowserService.h"
 #include "config-keepassx-tests.h"
+#include "config-keepassx.h"
 #include "crypto/Crypto.h"
 #include "gui/DatabaseTabWidget.h"
 #include "gui/FileDialog.h"
@@ -128,6 +129,9 @@ void TestGuiBrowser::cleanupTestCase()
 
 void TestGuiBrowser::testEntrySettings()
 {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    QSKIP("Browser integration UI is hidden in the 奈娜子 core-only layout.");
+#endif
     // Enable the Browser Integration
     config()->set(Config::Browser_Enabled, true);
 
@@ -176,6 +180,9 @@ void TestGuiBrowser::testEntrySettings()
 
 void TestGuiBrowser::testAdditionalURLs()
 {
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    QSKIP("Browser integration UI is hidden in the 奈娜子 core-only layout.");
+#endif
     auto* toolBar = m_mainWindow->findChild<QToolBar*>("toolBar");
     auto* entryView = m_dbWidget->findChild<EntryView*>("entryView");
 

@@ -30,7 +30,14 @@ WelcomeWidget::WelcomeWidget(QWidget* parent)
 {
     m_ui->setupUi(this);
 
-    m_ui->welcomeLabel->setText(QStringLiteral("奈娜子密码本 %1").arg(KEEPASSXC_VERSION));
+    m_ui->welcomeLabel->setText(tr("奈娜子密码本 %1").arg(KEEPASSXC_VERSION));
+    m_ui->startLabel->setText(
+        tr("A password notebook just for you. Logins live in an encrypted KDBX file, "
+           "and Auto-Type runs only when you press the shortcut."));
+    m_ui->buttonNewDatabase->setText(tr("New passbook"));
+    m_ui->buttonOpenDatabase->setText(tr("Open passbook"));
+    m_ui->buttonImport->setText(tr("Import from another format"));
+    m_ui->recentLabel->setText(tr("Opened recently"));
     QFont welcomeLabelFont = m_ui->welcomeLabel->font();
     welcomeLabelFont.setBold(true);
     welcomeLabelFont.setPointSize(welcomeLabelFont.pointSize() + 4);

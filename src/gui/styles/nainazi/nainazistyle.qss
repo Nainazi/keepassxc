@@ -136,6 +136,16 @@ QTreeView, QTableView, QListView {
     selection-color: #4A2340;
 }
 
+QTreeView::item, QTableView::item, QListView::item {
+    padding: 5px 8px;
+}
+
+QLabel#emptyNotebookLabel {
+    color: #8A7094;
+    font-size: 15px;
+    padding: 28px 16px;
+}
+
 QHeaderView::section {
     background: #F6EEF8;
     color: #6A5478;

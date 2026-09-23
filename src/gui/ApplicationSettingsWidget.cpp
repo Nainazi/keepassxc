@@ -39,9 +39,17 @@
 
 #include "FileDialog.h"
 #include "MessageBox.h"
+#include "gui/Application.h"
+#include "gui/PasswordGeneratorWidget.h"
 #ifdef KPXC_FEATURE_BROWSER
 #include "browser/BrowserSettingsPage.h"
 #endif
+
+#include <QAction>
+#include <QComboBox>
+#include <QHash>
+#include <QTimer>
+#include <QVBoxLayout>
 
 class ApplicationSettingsWidget::ExtraPage
 {
@@ -102,8 +110,69 @@ ApplicationSettingsWidget::ApplicationSettingsWidget(QWidget* parent)
         tr("Pause between keystrokes. Increase this if a slow page or IME drops characters."));
     addPage(tr("General"), icons()->icon("preferences-other"), m_generalWidget);
     addPage(tr("Security"), icons()->icon("security-high"), m_secWidget);
-#ifdef KPXC_FEATURE_BROWSER
+#if defined(KPXC_FEATURE_BROWSER) && !defined(KPXC_FEATURE_NAINAZI_CORE_UI)
     addSettingsPage(new BrowserSettingsPage());
+#endif
+
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    // Auto-Type becomes its own page instead of a tab buried under General.
+    if (autoType()->isAvailable()) {
+        auto* tabs = m_generalUi->generalSettingsTabWidget;
+        const int autoTypeIndex = tabs->indexOf(m_generalUi->tabAutotype);
+        if (autoTypeIndex >= 0) {
+            auto* autoTypePage = m_generalUi->tabAutotype;
+            tabs->removeTab(autoTypeIndex);
+            autoTypePage->setParent(nullptr);
+            addPage(tr("Auto-Type"), icons()->icon("auto-type"), autoTypePage);
+        }
+    }
+    m_generalUi->generalSettingsTabWidget->tabBar()->hide();
+
+    m_generalUi->faviconTimeoutLabel->setVisible(false);
+    m_generalUi->faviconTimeoutSpinBox->setVisible(false);
+    m_generalUi->useAlternativeSaveCheckBox->setVisible(false);
+    m_generalUi->alternativeSaveComboBox->setVisible(false);
+    m_generalUi->importSettingsButton->setVisible(false);
+    m_generalUi->exportSettingsButton->setVisible(false);
+    m_secUi->privacy->setVisible(false);
+
+    auto* appearance = new QWidget(this);
+    auto* appearanceLayout = new QVBoxLayout(appearance);
+    appearanceLayout->setContentsMargins(16, 16, 16, 16);
+    appearanceLayout->setSpacing(12);
+
+    auto* themeLabel = new QLabel(tr("Theme"), appearance);
+    m_themeCombo = new QComboBox(appearance);
+    m_themeCombo->setObjectName(QStringLiteral("nainaziThemeCombo"));
+    m_themeCombo->addItem(tr("奈娜子"), QStringLiteral("nainazi"));
+    m_themeCombo->addItem(tr("Follow system"), QStringLiteral("auto"));
+    m_themeCombo->addItem(tr("Light"), QStringLiteral("light"));
+    m_themeCombo->addItem(tr("Dark"), QStringLiteral("dark"));
+    m_themeCombo->addItem(tr("Classic"), QStringLiteral("classic"));
+    auto* themeHint = new QLabel(
+        tr("奈娜子 is the notebook look. Font size, the toolbar, and the system tray are below. "
+           "Switching to or from Classic needs a restart."),
+        appearance);
+    themeHint->setWordWrap(true);
+    appearanceLayout->addWidget(themeLabel);
+    appearanceLayout->addWidget(m_themeCombo);
+    appearanceLayout->addWidget(themeHint);
+
+    if (auto* sourceLayout = m_generalUi->generalGroup->parentWidget()->layout()) {
+        sourceLayout->removeWidget(m_generalUi->generalGroup);
+    }
+    m_generalUi->generalGroup->setParent(appearance);
+    appearanceLayout->addWidget(m_generalUi->generalGroup);
+    appearanceLayout->addStretch();
+    addPage(tr("Appearance"), icons()->icon("preferences-desktop-icons"), appearance);
+
+    m_passwordDefaults = new PasswordGeneratorWidget(this);
+    m_passwordDefaults->setObjectName(QStringLiteral("nainaziPasswordDefaults"));
+    m_passwordDefaults->setStandaloneMode(true);
+    if (auto* closeButton = m_passwordDefaults->findChild<QPushButton*>(QStringLiteral("buttonClose"))) {
+        closeButton->hide();
+    }
+    addPage(tr("Password Generator"), icons()->icon("password-generator"), m_passwordDefaults);
 #endif
 
     const bool showDesktopPortalsPreference =
@@ -438,6 +507,19 @@ void ApplicationSettingsWidget::loadSettings()
     m_secUi->quickUnlockCheckBox->setEnabled(getQuickUnlock()->isAvailable());
     m_secUi->quickUnlockCheckBox->setChecked(config()->get(Config::Security_QuickUnlock).toBool());
 
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (m_themeCombo) {
+        m_loadedTheme = config()->get(Config::GUI_ApplicationTheme).toString();
+        const int themeIndex = m_themeCombo->findData(m_loadedTheme);
+        if (themeIndex >= 0) {
+            m_themeCombo->setCurrentIndex(themeIndex);
+        }
+    }
+    if (m_passwordDefaults) {
+        m_passwordDefaults->loadSettings();
+    }
+#endif
+
     for (const ExtraPage& page : asConst(m_extraPages)) {
         page.loadSettings();
     }
@@ -589,6 +671,38 @@ void ApplicationSettingsWidget::saveSettings()
         config()->remove(Config::LastKeyFiles);
         config()->remove(Config::LastChallengeResponse);
     }
+
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+    if (m_passwordDefaults) {
+        m_passwordDefaults->saveSettings();
+    }
+    if (m_themeCombo) {
+        const auto theme = m_themeCombo->currentData().toString();
+        if (theme != m_loadedTheme) {
+            config()->set(Config::GUI_ApplicationTheme, theme);
+            const bool classicSwitch = theme == QLatin1String("classic") || m_loadedTheme == QLatin1String("classic");
+            m_loadedTheme = theme;
+            if (classicSwitch) {
+                QTimer::singleShot(200, this, [] {
+                    getMainWindow()->restartApp(tr(
+                        "You must restart the application to apply this setting. Would you like to restart now?"));
+                });
+            } else if (kpxcApp) {
+                kpxcApp->applyTheme();
+                const QHash<QString, QString> actionNames = {
+                    {QStringLiteral("nainazi"), QStringLiteral("actionThemeNainazi")},
+                    {QStringLiteral("auto"), QStringLiteral("actionThemeAuto")},
+                    {QStringLiteral("light"), QStringLiteral("actionThemeLight")},
+                    {QStringLiteral("dark"), QStringLiteral("actionThemeDark")},
+                    {QStringLiteral("classic"), QStringLiteral("actionThemeClassic")},
+                };
+                if (auto* action = getMainWindow()->findChild<QAction*>(actionNames.value(theme))) {
+                    action->setChecked(true);
+                }
+            }
+        }
+    }
+#endif
 
     for (const ExtraPage& page : asConst(m_extraPages)) {
         page.saveSettings();

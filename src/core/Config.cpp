@@ -18,6 +18,7 @@
 
 #include "Config.h"
 #include "Global.h"
+#include "config-keepassx.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -112,7 +113,16 @@ static const QHash<Config::ConfigKey, ConfigDirective> configStrings = {
     {Config::GUI_HideGroupPanel, {QS("GUI/HideGroupPanel"), Roaming, false}},
     {Config::GUI_HidePreviewPanel, {QS("GUI/HidePreviewPanel"), Roaming, false}},
     {Config::GUI_AlwaysOnTop, {QS("GUI/GUI_AlwaysOnTop"), Local, false}},
-    {Config::GUI_ToolButtonStyle, {QS("GUI/ToolButtonStyle"), Roaming, Qt::ToolButtonIconOnly}},
+    {Config::GUI_ToolButtonStyle,
+     {QS("GUI/ToolButtonStyle"),
+      Roaming,
+#ifdef KPXC_FEATURE_NAINAZI_CORE_UI
+      // Short toolbar reads as Chinese labels beside a few icons.
+      static_cast<int>(Qt::ToolButtonTextBesideIcon)
+#else
+      static_cast<int>(Qt::ToolButtonIconOnly)
+#endif
+     }},
     {Config::GUI_LaunchAtStartup, {QS("GUI/LaunchAtStartup"), Roaming, false}},
     {Config::GUI_ShowTrayIcon, {QS("GUI/ShowTrayIcon"), Roaming, false}},
     {Config::GUI_TrayIconAppearance, {QS("GUI/TrayIconAppearance"), Roaming, QS("colorful")}},

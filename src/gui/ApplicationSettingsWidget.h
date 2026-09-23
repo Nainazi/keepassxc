@@ -21,6 +21,9 @@
 
 #include "gui/EditWidget.h"
 
+class PasswordGeneratorWidget;
+class QComboBox;
+
 namespace Ui
 {
     class ApplicationSettingsWidgetGeneral;
@@ -75,6 +78,9 @@ private:
     Qt::KeyboardModifiers m_globalAutoTypeModifiers;
     class ExtraPage;
     QList<ExtraPage> m_extraPages;
+    PasswordGeneratorWidget* m_passwordDefaults = nullptr;
+    QComboBox* m_themeCombo = nullptr;
+    QString m_loadedTheme;
 };
 
 #endif // KEEPASSX_SETTINGSWIDGET_H
